@@ -4,6 +4,11 @@ import Vuex from 'vuex';
 import Backend from './Backend';
 import CampaignFolder from './CampaignFolder/CampaignFolder';
 
+// import Loader from './Loader';
+// Vue.component('Loader', Loader);
+
+import { debounce } from 'lodash';
+
 import './crm_stuff';
 
 Vue.use(Vuex);
@@ -32,16 +37,16 @@ store.dispatch('load');
 function getStore() {
   let state = {
     folders: [],
-    items: []
-    // loading: {
-    //   saveSnippet: false,
-    //   delSnippet: false,
-    //   addCategory: false,
-    //   delCategory: false,
-    //   updateCategory: false,
-    //   createSnippet: false,
-    //   el: null
-    // }
+    items: [],
+    loading: {
+      createFolder: false,
+      // delSnippet: false,
+      // addCategory: false,
+      // delCategory: false,
+      // updateCategory: false,
+      // createSnippet: false,
+      el: null
+    }
   };
 
   let mutations = {
@@ -50,12 +55,12 @@ function getStore() {
     },
     items(state, payload) {
       state.items = payload;
+    },
+    add_folder(state, folder) {
+      state.folders.push(folder);
     }
     // languages(state, payload) {
     //   state.languages = payload;
-    // },
-    // add_category(state, category) {
-    //   state.categories.unshift(category);
     // },
     // add_snippet(state, snippet) {
     //   state.snippets.push(snippet);
@@ -88,31 +93,44 @@ function getStore() {
         commit('folders', response.message.folders);
         commit('items', response.message.items);
       });
-    }
-
-    // async updateCategoryOrder({ commit }, payload) {
-    //   return Backend.saveCategoriesPosition(payload).then(response => {
+    },
+    createFolder: debounce(
+      async ({ commit }, name) => {
+        return Backend.createFolder(name).then(response => {
+          if (response.success) {
+            commit('add_folder', response.message.folder);
+            window.app.ui.success();
+            return Promise.resolve();
+          } else {
+            window.app.ui.error(response.message);
+          }
+        });
+      },
+      100,
+      { leading: true }
+    ),
+    // createFolder({ commit }, name) {
+    //   return Backend.createFolder(name).then(response => {
     //     if (response.success) {
-    //       commit('categories', payload);
+    //       commit('add_folder', response.message.folder);
     //       window.app.ui.success();
     //       return Promise.resolve();
     //     } else {
     //       window.app.ui.error(response.message);
     //     }
     //   });
-    // },
-
-    // async addCategory({ commit }, name) {
-    //   return Backend.addCategory(name).then(response => {
-    //     if (response.success) {
-    //       commit('add_category', response.message.category);
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // },
+    // }
+    async updateFolderOrder({ commit }, payload) {
+      return Backend.saveFoldersPosition(payload).then(response => {
+        if (response.success) {
+          commit('folders', payload);
+          window.app.ui.success();
+          return Promise.resolve();
+        } else {
+          window.app.ui.error(response.message);
+        }
+      });
+    },
 
     // async deleteCategory({ commit }, categoryId) {
     //   return Backend.deleteCategory(categoryId).then(response => {

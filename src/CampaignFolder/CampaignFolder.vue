@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'frame-loading': loading }">
     <Folder :folders="folders">
       <template v-slot:link>
         <button class="btn btn-link">
@@ -9,10 +9,7 @@
       </template>
 
       <template v-slot:content>
-        <div
-          v-for="(status, index) in ['sent', 'planned', 'draft']"
-          :key="index"
-        >
+        <div v-for="(status, index) in statusList" :key="index">
           <h3>{{ status }}</h3>
 
           <FileList :list="campaignWithStatus(status)">
@@ -25,6 +22,7 @@
                 <th>Id</th>
                 <th>Action</th>
               </template>
+
               <!-- PLANNED -->
               <template v-if="status === 'planned'">
                 <th>Nom</th>
@@ -32,6 +30,7 @@
                 <th>Ouverture</th>
                 <th>Action</th>
               </template>
+
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
                 <th>Nom</th>
@@ -64,6 +63,7 @@
                   </div>
                 </td>
               </template>
+
               <!-- PLANNED -->
               <template v-if="status === 'planned'">
                 <td>{{ item.name }}</td>
@@ -83,6 +83,7 @@
                   </div>
                 </td>
               </template>
+              
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
                 <td>{{ item.name }}</td>
@@ -127,7 +128,9 @@ export default {
   },
   data() {
     return {
-      searchItems: ''
+      loading: false,
+      searchItems: '',
+      statusList: ['sent', 'planned', 'draft']
     };
   },
   computed: {
@@ -148,10 +151,24 @@ export default {
     },
     handleSearch(val) {
       this.searchItems = val;
+    },
+    handleCreateFolder(val) {
+      this.loading = true;
+      this.$store.dispatch('createFolder', val).then(() => {
+        this.loading = false;
+      });
+    },
+    handleFolderMove(val) {
+      // this.loading = true;
+      this.$store.dispatch('updateFolderOrder', val).then(() => {
+        // this.loading = false;
+      });
     }
   },
   created() {
     this.$root.$on('files-search', this.handleSearch);
+    this.$root.$on('create-folder', this.handleCreateFolder);
+    this.$root.$on('folder-move', this.handleFolderMove);
   }
 };
 </script>

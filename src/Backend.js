@@ -4,14 +4,28 @@ function uuid() {
     .slice(2);
 }
 
-// Categories //
+// Folders //
 
-function saveCategoriesPosition(categories) {
+function createFolder(name) {
+  return new Promise(resolve => {
+    setTimeout(function() {
+      //ajax goes here
+      console.log('ajax call add folder', { name });
+
+      resolve({
+        success: true,
+        message: { folder: { id: uuid(), name, items: [] } }
+      });
+    }, 500);
+  });
+}
+
+function saveFoldersPosition(folders) {
   return new Promise(resolve => {
     //ajax goes here
     console.log(
-      'ajax call categories',
-      categories.map(category => category.id)
+      'ajax call folders',
+      folders.map(folder => folder.id)
     );
 
     resolve({
@@ -21,19 +35,6 @@ function saveCategoriesPosition(categories) {
   });
 }
 
-function addCategory(name) {
-  return new Promise(resolve => {
-    setTimeout(function() {
-      //ajax goes here
-      console.log('ajax call add category', { name });
-
-      resolve({
-        success: true,
-        message: { category: { id: uuid(), name } }
-      });
-    }, 1000);
-  });
-}
 
 function updateCategory(category) {
   return new Promise(resolve => {
@@ -276,8 +277,8 @@ function load() {
 
 export default {
   load,
-  saveCategoriesPosition,
-  addCategory,
+  createFolder,
+  saveFoldersPosition,
   updateCategory,
   deleteCategory,
   saveSnippetsPosition,

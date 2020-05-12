@@ -38,12 +38,13 @@ window.app = {
       z.innerHTML = str;
       document.body.appendChild(z);
       window.setTimeout(function() {
+        z.parentNode.removeChild(z);
         // $('.toaster.alert')
         //   .fadeTo(200, 0)
         //   .slideUp(200, function() {
         //     $(this).remove();
         //   });
-      }, 500);
+      }, 2000);
     },
     prompt(title, value) {
       return new Promise(resolve => {

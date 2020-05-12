@@ -4,7 +4,7 @@
       <h4 class="box-title">
         {{ __('Dossiers') }}
       </h4>
-      <button class="btn btn-link ml-auto">
+      <button class="btn btn-link ml-auto" @click="createFolder">
         <i class="fas fa-folder-plus"></i>
       </button>
     </div>
@@ -22,13 +22,15 @@
       <i class="fas fa-folder"></i>
       <span class="pl-3">Toutes les campagnes</span>
     </a>
-    <FolderItem
-      v-for="folder in filteredFolder"
-      :key="folder.id"
-      :folder="folder"
-    ></FolderItem>
+    <draggable v-model="dragFolders" v-bind="dragOptions">
+      <FolderItem
+        v-for="folder in filteredFolder"
+        :key="folder.id"
+        :folder="folder"
+      ></FolderItem>
+    </draggable>
     <div class="mt-4">
-      <button class="btn btn-lightblue2 btn-fa-left">
+      <button class="btn btn-lightblue2 btn-fa-left" @click="createFolder">
         <i class="fas fa-folder-plus"></i> {{ __('Nouveau dossier') }}
       </button>
     </div>
@@ -36,16 +38,16 @@
 </template>
 
 <script>
-import { deburr } from 'lodash';
-
-// import FolderListing from './FolderListing';
 import FolderItem from './FolderItem';
+import draggable from 'vuedraggable';
+import { deburr } from 'lodash';
 
 export default {
   name: 'FolderListing',
   props: ['folders'],
   components: {
-    FolderItem
+    FolderItem,
+    draggable
   },
   data() {
     return {
@@ -53,30 +55,37 @@ export default {
     };
   },
   computed: {
+    dragFolders: {
+      get() {
+        return this.folders;
+      },
+      set(value) {
+        console.log(value);
+        this.$root.$emit('folder-move', value);
+      }
+    },
     filteredFolder() {
       return this.folders.filter(folder => {
         return deburr(folder.name.toLowerCase()).match(
           deburr(this.search.toLowerCase())
         );
       });
+    },
+    dragOptions() {
+      return {
+        animation: 150,
+        //handle: '[data-drag-category]',
+        forceFallback: true // Key to make autoScroll works
+      };
     }
   },
   methods: {
-    addFolder() {
+    createFolder() {
       window.app.ui
         .prompt(this.__('Ajouter un nouveau dossier'))
         .then(response => {
-          this.$store.dispatch('loading', {
-            event: 'addCategory',
-            isLoading: true
-          });
           if (response) {
-            this.$store.dispatch('addCategory', response).then(() => {
-              this.$store.dispatch('loading', {
-                event: 'addCategory',
-                isLoading: false
-              });
-            });
+            this.$root.$emit('create-folder', response);
           }
         });
     }
