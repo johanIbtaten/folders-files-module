@@ -22,8 +22,12 @@
       <i class="fas fa-folder"></i>
       <span class="pl-3">Toutes les campagnes</span>
     </a>
-    <FoldersList :filteredFolder="filteredFolder" class="mb-4"></FoldersList>
-    <div>
+    <FolderItem
+      v-for="folder in filteredFolder"
+      :key="folder.id"
+      :folder="folder"
+    ></FolderItem>
+    <div class="mt-4">
       <button class="btn btn-lightblue2 btn-fa-left">
         <i class="fas fa-folder-plus"></i> {{ __('Nouveau dossier') }}
       </button>
@@ -34,13 +38,14 @@
 <script>
 import { deburr } from 'lodash';
 
-import FoldersList from './FoldersList';
+// import FolderListing from './FolderListing';
+import FolderItem from './FolderItem';
 
 export default {
-  name: 'ElementsList',
+  name: 'FolderListing',
   props: ['folders'],
   components: {
-    FoldersList
+    FolderItem
   },
   data() {
     return {
@@ -54,6 +59,26 @@ export default {
           deburr(this.search.toLowerCase())
         );
       });
+    }
+  },
+  methods: {
+    addFolder() {
+      window.app.ui
+        .prompt(this.__('Ajouter un nouveau dossier'))
+        .then(response => {
+          this.$store.dispatch('loading', {
+            event: 'addCategory',
+            isLoading: true
+          });
+          if (response) {
+            this.$store.dispatch('addCategory', response).then(() => {
+              this.$store.dispatch('loading', {
+                event: 'addCategory',
+                isLoading: false
+              });
+            });
+          }
+        });
     }
   }
 };

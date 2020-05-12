@@ -14,29 +14,42 @@
         <input
           type="text"
           placeholder="Rechercher dans les campagnes"
-          v-model="inputVal"
+          v-model="search"
         />
         <i class="fas fa-search"></i>
       </label>
     </div>
-    <slot></slot>
+    <slot name="content"></slot>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Directory',
+  name: 'FolderContent',
   props: ['inputSearch'],
-
+  data() {
+    return {
+      searchFiles: ''
+    };
+  },
   computed: {
-    inputVal: {
+    search: {
       get() {
-        return this.inputSearch;
+        return this.searchFiles;
       },
       set(val) {
-        this.$emit('items-search', val);
+        this.searchFiles = val;
+        this.$root.$emit('files-search', val);
       }
     }
+    // inputVal: {
+    //   get() {
+    //     return this.inputSearch;
+    //   },
+    //   set(val) {
+    //     this.$emit('files-search', val);
+    //   }
+    // }
   }
 };
 </script>

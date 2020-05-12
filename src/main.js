@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import Backend from './Backend';
-import Directory from './Directory/Directory';
+import CampaignFolder from './CampaignFolder/CampaignFolder';
 
 import './crm_stuff';
 
@@ -23,7 +23,7 @@ let store = getStore();
 // Instance de vue //
 new Vue({
   store,
-  render: h => h(Directory)
+  render: h => h(CampaignFolder)
 }).$mount('#app');
 
 store.dispatch('load');
