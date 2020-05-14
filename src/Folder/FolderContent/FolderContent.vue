@@ -4,7 +4,7 @@
       <button class="btn btn-outline-secondary float-right">
         <i class="fas fa-cog"></i>
       </button>
-      <h4>{{ __('Toutes les campagnes') }}</h4>
+      <h4><slot name="title"></slot></h4>
     </div>
     <div class="text-center mb-3">
       <slot name="link"></slot>

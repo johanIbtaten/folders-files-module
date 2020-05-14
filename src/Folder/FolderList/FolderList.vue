@@ -17,7 +17,7 @@
     <a
       v-if="allCampaigns"
       class="d-flex align-items-center border-bottom py-2"
-      @click.prevent
+      @click.prevent="handleGetAllClick"
       href="#"
     >
       <i class="fas fa-folder"></i>
@@ -26,7 +26,7 @@
     <a
       v-if="unclassifiedCampaigns"
       class="d-flex align-items-center border-bottom py-2"
-      @click.prevent
+      @click.prevent="handleGetUnclassClick"
       href="#"
     >
       <i class="fas fa-folder"></i>
@@ -99,6 +99,12 @@ export default {
             this.$root.$emit('create-folder', response);
           }
         });
+    },
+    handleGetAllClick() {
+      this.$root.$emit('get-all');
+    },
+    handleGetUnclassClick() {
+      this.$root.$emit('get-unclassified');
     }
   }
 };

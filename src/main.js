@@ -122,26 +122,42 @@ function getStore() {
       });
     },
 
-    async updateFolderContent({ state, commit }, contentIds) {
-      return Backend.updateFolderContent(contentIds).then(response => {
-        if (response.success) {
-          let payload = state.folders.map(folder => {
-            if (folder.id === contentIds.folderId) {
-              if (!folder.items.includes(contentIds.fileId)) {
-                folder.items.push(contentIds.fileId);
+    async updateFolderContent(
+      { state, commit },
+      { contentIds, selectedFolder }
+    ) {
+      return Backend.updateFolderContent({ contentIds, selectedFolder }).then(
+        response => {
+          if (response.success) {
+            let payload = state.folders.map(folder => {
+              if (folder.id === contentIds.folderId) {
+                if (!folder.items.includes(contentIds.fileId)) {
+                  folder.items.push(contentIds.fileId);
+                }
               }
-            }
-            return folder;
-          });
+              if (
+                selectedFolder &&
+                folder.id === selectedFolder.id &&
+                contentIds.folderId !== selectedFolder.id
+              ) {
+                if (folder.items.includes(contentIds.fileId)) {
+                  folder.items.splice(
+                    folder.items.indexOf(contentIds.fileId),
+                    1
+                  );
+                }
+              }
+              return folder;
+            });
 
-          console.log('payload', payload); ////////////////////////////////////////
-          commit('folders', payload);
-          window.app.ui.success();
-          return Promise.resolve();
-        } else {
-          window.app.ui.error(response.message);
+            commit('folders', payload);
+            window.app.ui.success();
+            return Promise.resolve();
+          } else {
+            window.app.ui.error(response.message);
+          }
         }
-      });
+      );
     }
 
     // createFolder({ commit }, name) {

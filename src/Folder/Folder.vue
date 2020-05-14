@@ -10,6 +10,9 @@
       </div>
       <div class="col-9">
         <FolderContent>
+          <template slot="title">
+            <slot name="title"></slot>
+          </template>
           <template slot="link">
             <slot name="link"></slot>
           </template>
@@ -58,22 +61,6 @@ export default {
     //     return item.status === 'draft';
     //   });
     // }
-  },
-  methods: {
-    handleGetFolderContent(val) {
-      console.log('handleGetFolderContent', val);
-      // this.folderItems = val;
-      // if (this.folderItems) {
-      //   this.listFiles = this.list.map(file => {
-      //     if (this.folderItems.includes(file.id)) {
-      //       return file;
-      //     }
-      //   });
-      // }
-    }
-  },
-  created() {
-    this.$root.$on('get-folder-content', this.handleGetFolderContent);
   }
 };
 </script>

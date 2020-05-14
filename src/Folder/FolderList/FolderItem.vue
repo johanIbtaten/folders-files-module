@@ -58,8 +58,8 @@ export default {
     //   console.log("startFile", file);
     // },
     handleFolderClick() {
-      console.log('this.folder.id', this.folder.id);
-      this.$root.$emit('get-folder-content', this.folder.id);
+      console.log('this.folder.id', this.folder);
+      this.$root.$emit('get-folder-content', this.folder);
     },
     endFolder(event) {
       console.log('endFolder', event);
@@ -93,7 +93,11 @@ export default {
   background: pink;
   opacity: 0.4;
   border: 3px solid red;
-  z-index: 0;
-  pointer-events: none;
+  z-index: -1;
+  display: none;
+}
+
+.drag-file .dropZoneFile {
+  display: block;
 }
 </style>

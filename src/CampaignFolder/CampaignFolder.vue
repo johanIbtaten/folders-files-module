@@ -1,11 +1,21 @@
 <template>
   <div :class="{ 'frame-loading': loading }">
-    {{folders}}
     <Folder
       :folders="folders"
       :allCampaigns="true"
       :unclassifiedCampaigns="true"
+      :class="{ 'drag-file': isDragFile }"
     >
+      <template v-slot:title>
+        {{
+          selectedFolder
+            ? selectedFolder === 'unclassified'
+              ? 'Les campagnes non-classées'
+              : selectedFolder.name
+            : 'Toutes les campagnes'
+        }}
+      </template>
+
       <template v-slot:link>
         <button class="btn btn-link">
           {{ __('Statistique du dossier') }}
@@ -21,27 +31,27 @@
             <template v-slot:filesheader>
               <!-- SENT -->
               <template v-if="status === 'sent'">
+                <th>Id</th>
                 <th>Nom</th>
                 <th>Status</th>
                 <th>Ouverture</th>
-                <th>Id</th>
                 <th>Action</th>
               </template>
 
               <!-- PLANNED -->
               <template v-if="status === 'planned'">
+                <th>Id</th>
                 <th>Nom</th>
                 <th>Status</th>
-                <th>Ouverture</th>
                 <th>Action</th>
               </template>
 
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
+                <th>Id</th>
                 <th>Nom</th>
                 <th>Status</th>
                 <th>Ouverture</th>
-                <th>Id</th>
                 <th>Id</th>
                 <th>Action</th>
               </template>
@@ -50,10 +60,10 @@
             <template v-slot:file="{ item }">
               <!-- SENT -->
               <template v-if="status === 'sent'">
+                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.opened_count }}</td>
-                <td>{{ item.id }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -71,9 +81,9 @@
 
               <!-- PLANNED -->
               <template v-if="status === 'planned'">
+                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.status }}</td>
-                <td>{{ item.opened_count }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -91,10 +101,10 @@
 
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
+                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.opened_count }}</td>
-                <td>{{ item.id }}</td>
                 <td>{{ item.id }}</td>
                 <td>
                   <div class="ml-auto btn-container">
@@ -135,17 +145,44 @@ export default {
     return {
       loading: false,
       searchItems: '',
-      statusList: ['sent', 'planned', 'draft']
+      statusList: ['sent', 'planned', 'draft'],
+      selectedFolder: null,
+      isDragFile: false
     };
   },
   computed: {
     ...mapState(['folders', 'items']),
     filteredItems() {
-      return this.items.filter(item => {
-        return deburr(item.name.toLowerCase()).match(
-          deburr(this.searchItems.toLowerCase())
-        );
-      });
+      let files = this.items;
+
+      if (this.selectedFolder) {
+        if (this.selectedFolder === 'unclassified') {
+          files = files.filter(file => {
+            let isClassified = false;
+            this.folders.map(folder => {
+              if (folder.items.includes(file.id)) {
+                isClassified = true;
+              }
+            });
+            return !isClassified;
+          });
+          console.log('files', files);
+        } else {
+          files = files.filter(file => {
+            return this.selectedFolder.items.includes(file.id);
+          });
+        }
+      }
+
+      if (this.searchItems) {
+        return files.filter(item => {
+          return deburr(item.name.toLowerCase()).match(
+            deburr(this.searchItems.toLowerCase())
+          );
+        });
+      }
+
+      return files;
     }
   },
   methods: {
@@ -164,16 +201,30 @@ export default {
       });
     },
     handleFolderMove(val) {
-      // this.loading = true;
-      this.$store.dispatch('updateFolderOrder', val).then(() => {
-        // this.loading = false;
-      });
+      this.$store.dispatch('updateFolderOrder', val).then(() => {});
     },
     handleFileDropped(val) {
-      // this.loading = true;
-      this.$store.dispatch('updateFolderContent', val).then(() => {
-        // this.loading = false;
-      });
+      this.$store
+        .dispatch('updateFolderContent', {
+          contentIds: val,
+          selectedFolder: this.selectedFolder
+        })
+        .then(() => {});
+    },
+    handleGetFolderContent(val) {
+      this.selectedFolder = val;
+    },
+    handleGetAllClick() {
+      this.selectedFolder = null;
+    },
+    handleGetUnclassifiedClick() {
+      this.selectedFolder = 'unclassified';
+    },
+    handleStartDragFile() {
+      this.isDragFile = true;
+    },
+    handleEndDragFile() {
+      this.isDragFile = false;
     }
   },
   created() {
@@ -181,6 +232,11 @@ export default {
     this.$root.$on('create-folder', this.handleCreateFolder);
     this.$root.$on('folder-move', this.handleFolderMove);
     this.$root.$on('file-dropped', this.handleFileDropped);
+    this.$root.$on('get-folder-content', this.handleGetFolderContent);
+    this.$root.$on('get-all', this.handleGetAllClick);
+    this.$root.$on('get-unclassified', this.handleGetUnclassifiedClick);
+    this.$root.$on('start-drag-file', this.handleStartDragFile);
+    this.$root.$on('end-drag-file', this.handleEndDragFile);
   }
 };
 </script>

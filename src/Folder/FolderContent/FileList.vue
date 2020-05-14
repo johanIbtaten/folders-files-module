@@ -6,7 +6,13 @@
           <slot name="filesheader"></slot>
         </tr>
       </thead>
-      <draggable tag="tbody" v-model="dragFiles" v-bind="dragFilesOptions">
+      <draggable
+        tag="tbody"
+        v-model="dragFiles"
+        v-bind="dragFilesOptions"
+        @start="onStart"
+        @end="onEnd"
+      >
         <tr v-for="item in list" :key="item.id">
           <slot name="file" :item="item"></slot>
         </tr>
@@ -45,12 +51,23 @@ export default {
         animation: 150,
         group: {
           name: 'files',
-          put: false
+          put: false,
+          pull: true
         },
         sort: false,
         forceFallback: true // Key to make autoScroll works
         //handle: '[data-drag-category]',
       };
+    }
+  },
+  methods: {
+    onStart() {
+      console.log('start');
+      this.$root.$emit('start-drag-file');
+    },
+    onEnd() {
+      console.log('end');
+      this.$root.$emit('end-drag-file');
     }
   }
 };

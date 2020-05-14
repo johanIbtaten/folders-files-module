@@ -35,11 +35,15 @@ function saveFoldersPosition(folders) {
   });
 }
 
-function updateFolderContent(folder) {
+function updateFolderContent({ contentIds, selectedFolder }) {
   return new Promise(resolve => {
     setTimeout(function() {
       //ajax goes here
-      console.log('ajax call update folder content', folder);
+      console.log(
+        'ajax call update folder content',
+        contentIds,
+        selectedFolder
+      );
 
       resolve({
         success: true,
@@ -163,17 +167,17 @@ function load() {
           {
             id: 1,
             name: "Campagne d'été",
-            items: [1,2]
+            items: []
           },
           {
             id: 2,
             name: "Campagne d'hiver",
-            items: [3]
+            items: []
           },
           {
             id: 3,
             name: 'Mes tests de campagnes',
-            items: [4]
+            items: []
           }
         ],
         items: [
