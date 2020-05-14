@@ -2,7 +2,11 @@
   <div class="container mt-3">
     <div class="row">
       <div class="col-3">
-        <FolderList :folders="folders"></FolderList>
+        <FolderList
+          :folders="folders"
+          :allCampaigns="allCampaigns"
+          :unclassifiedCampaigns="unclassifiedCampaigns"
+        ></FolderList>
       </div>
       <div class="col-9">
         <FolderContent>
@@ -26,7 +30,7 @@ import FolderContent from './FolderContent/FolderContent';
 
 export default {
   name: 'Folder',
-  props: ['folders', 'files'],
+  props: ['folders', 'files', 'allCampaigns', 'unclassifiedCampaigns'],
   components: {
     FolderList,
     FolderContent
@@ -56,9 +60,20 @@ export default {
     // }
   },
   methods: {
-    // handleSearch(val) {
-    //   this.searchFiles = val;
-    // }
+    handleGetFolderContent(val) {
+      console.log('handleGetFolderContent', val);
+      // this.folderItems = val;
+      // if (this.folderItems) {
+      //   this.listFiles = this.list.map(file => {
+      //     if (this.folderItems.includes(file.id)) {
+      //       return file;
+      //     }
+      //   });
+      // }
+    }
+  },
+  created() {
+    this.$root.$on('get-folder-content', this.handleGetFolderContent);
   }
 };
 </script>

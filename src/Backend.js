@@ -35,12 +35,11 @@ function saveFoldersPosition(folders) {
   });
 }
 
-
-function updateCategory(category) {
+function updateFolderContent(folder) {
   return new Promise(resolve => {
     setTimeout(function() {
       //ajax goes here
-      console.log('ajax call update category', category);
+      console.log('ajax call update folder content', folder);
 
       resolve({
         success: true,
@@ -50,110 +49,110 @@ function updateCategory(category) {
   });
 }
 
-function deleteCategory(categoryId) {
-  return new Promise(resolve => {
-    setTimeout(function() {
-      //ajax goes here
-      console.log('ajax call delete category', categoryId);
+// function deleteCategory(categoryId) {
+//   return new Promise(resolve => {
+//     setTimeout(function() {
+//       //ajax goes here
+//       console.log('ajax call delete category', categoryId);
 
-      resolve({
-        success: true,
-        message: null
-      });
-    }, 1000);
-  });
-}
+//       resolve({
+//         success: true,
+//         message: null
+//       });
+//     }, 1000);
+//   });
+// }
 
-// Snippets //
+// // Snippets //
 
-function saveSnippetsPosition(snippets) {
-  return new Promise(resolve => {
-    //ajax goes here
-    console.log(
-      'ajax call snippets',
-      snippets.map(snippet => {
-        return {
-          id: snippet.id,
-          category_id: snippet.category_id,
-          position: snippet.position
-        };
-      })
-    );
+// function saveSnippetsPosition(snippets) {
+//   return new Promise(resolve => {
+//     //ajax goes here
+//     console.log(
+//       'ajax call snippets',
+//       snippets.map(snippet => {
+//         return {
+//           id: snippet.id,
+//           category_id: snippet.category_id,
+//           position: snippet.position
+//         };
+//       })
+//     );
 
-    resolve({
-      success: true,
-      message: null
-    });
-  });
-}
+//     resolve({
+//       success: true,
+//       message: null
+//     });
+//   });
+// }
 
-function saveSnippet(snippetToSave) {
-  return new Promise(resolve => {
-    setTimeout(function() {
-      //ajax goes here
-      console.log('ajax call save snippet', {
-        id: snippetToSave.id,
-        title: snippetToSave.title,
-        contents: snippetToSave.contents
-      });
-      resolve({
-        success: true,
-        message: null
-      });
-    }, 1000);
-  });
-}
+// function saveSnippet(snippetToSave) {
+//   return new Promise(resolve => {
+//     setTimeout(function() {
+//       //ajax goes here
+//       console.log('ajax call save snippet', {
+//         id: snippetToSave.id,
+//         title: snippetToSave.title,
+//         contents: snippetToSave.contents
+//       });
+//       resolve({
+//         success: true,
+//         message: null
+//       });
+//     }, 1000);
+//   });
+// }
 
-function getEmptySnippet() {
-  return new Promise(resolve => {
-    setTimeout(function() {
-      //ajax goes here
-      console.log('ajax call get empty snippet');
+// function getEmptySnippet() {
+//   return new Promise(resolve => {
+//     setTimeout(function() {
+//       //ajax goes here
+//       console.log('ajax call get empty snippet');
 
-      resolve({
-        success: true,
-        message: {
-          snippet: {
-            id: uuid(),
-            title: '',
-            category_id: 0,
-            position: 1000,
-            contents: [
-              {
-                language_id: 1,
-                content: ''
-              },
-              {
-                language_id: 2,
-                content: ''
-              },
-              {
-                language_id: 3,
-                content: ''
-              }
-            ]
-          }
-        }
-      });
-    }, 1000);
-  });
-}
+//       resolve({
+//         success: true,
+//         message: {
+//           snippet: {
+//             id: uuid(),
+//             title: '',
+//             category_id: 0,
+//             position: 1000,
+//             contents: [
+//               {
+//                 language_id: 1,
+//                 content: ''
+//               },
+//               {
+//                 language_id: 2,
+//                 content: ''
+//               },
+//               {
+//                 language_id: 3,
+//                 content: ''
+//               }
+//             ]
+//           }
+//         }
+//       });
+//     }, 1000);
+//   });
+// }
 
-function deleteSnippet(snippetId) {
-  return new Promise(resolve => {
-    setTimeout(function() {
-      //ajax goes here
-      console.log('ajax call delete snippet', snippetId);
+// function deleteSnippet(snippetId) {
+//   return new Promise(resolve => {
+//     setTimeout(function() {
+//       //ajax goes here
+//       console.log('ajax call delete snippet', snippetId);
 
-      resolve({
-        success: true,
-        message: null
-      });
-    }, 1000);
-  });
-}
+//       resolve({
+//         success: true,
+//         message: null
+//       });
+//     }, 1000);
+//   });
+// }
 
-// Datas //
+// // Datas //
 
 function load() {
   return new Promise(resolve => {
@@ -164,17 +163,17 @@ function load() {
           {
             id: 1,
             name: "Campagne d'été",
-            items: [1, 2]
+            items: [1,2]
           },
           {
             id: 2,
             name: "Campagne d'hiver",
-            items: []
+            items: [3]
           },
           {
             id: 3,
             name: 'Mes tests de campagnes',
-            items: [3, 4]
+            items: [4]
           }
         ],
         items: [
@@ -279,10 +278,10 @@ export default {
   load,
   createFolder,
   saveFoldersPosition,
-  updateCategory,
-  deleteCategory,
-  saveSnippetsPosition,
-  saveSnippet,
-  getEmptySnippet,
-  deleteSnippet
+  updateFolderContent
+  // deleteCategory,
+  // saveSnippetsPosition,
+  // saveSnippet,
+  // getEmptySnippet,
+  // deleteSnippet
 };

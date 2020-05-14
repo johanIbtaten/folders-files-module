@@ -15,6 +15,7 @@
       </label>
     </div>
     <a
+      v-if="allCampaigns"
       class="d-flex align-items-center border-bottom py-2"
       @click.prevent
       href="#"
@@ -22,7 +23,16 @@
       <i class="fas fa-folder"></i>
       <span class="pl-3">Toutes les campagnes</span>
     </a>
-    <draggable v-model="dragFolders" v-bind="dragOptions">
+    <a
+      v-if="unclassifiedCampaigns"
+      class="d-flex align-items-center border-bottom py-2"
+      @click.prevent
+      href="#"
+    >
+      <i class="fas fa-folder"></i>
+      <span class="pl-3">Les campagnes non classées</span>
+    </a>
+    <draggable v-model="filteredFolder" v-bind="dragFoldersOptions">
       <FolderItem
         v-for="folder in filteredFolder"
         :key="folder.id"
@@ -44,7 +54,7 @@ import { deburr } from 'lodash';
 
 export default {
   name: 'FolderListing',
-  props: ['folders'],
+  props: ['folders', 'allCampaigns', 'unclassifiedCampaigns'],
   components: {
     FolderItem,
     draggable
@@ -55,25 +65,26 @@ export default {
     };
   },
   computed: {
-    dragFolders: {
+    filteredFolder: {
       get() {
-        return this.folders;
+        return this.folders.filter(folder => {
+          return deburr(folder.name.toLowerCase()).match(
+            deburr(this.search.toLowerCase())
+          );
+        });
       },
       set(value) {
         console.log(value);
         this.$root.$emit('folder-move', value);
       }
     },
-    filteredFolder() {
-      return this.folders.filter(folder => {
-        return deburr(folder.name.toLowerCase()).match(
-          deburr(this.search.toLowerCase())
-        );
-      });
-    },
-    dragOptions() {
+    dragFoldersOptions() {
       return {
         animation: 150,
+        group: {
+          name: 'folders',
+          put: false
+        },
         //handle: '[data-drag-category]',
         forceFallback: true // Key to make autoScroll works
       };
@@ -101,3 +112,4 @@ export default {
   font-size: 1rem;
 }
 </style>
+

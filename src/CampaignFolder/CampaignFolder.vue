@@ -1,6 +1,11 @@
 <template>
   <div :class="{ 'frame-loading': loading }">
-    <Folder :folders="folders">
+    {{folders}}
+    <Folder
+      :folders="folders"
+      :allCampaigns="true"
+      :unclassifiedCampaigns="true"
+    >
       <template v-slot:link>
         <button class="btn btn-link">
           {{ __('Statistique du dossier') }}
@@ -83,7 +88,7 @@
                   </div>
                 </td>
               </template>
-              
+
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
                 <td>{{ item.name }}</td>
@@ -163,12 +168,19 @@ export default {
       this.$store.dispatch('updateFolderOrder', val).then(() => {
         // this.loading = false;
       });
+    },
+    handleFileDropped(val) {
+      // this.loading = true;
+      this.$store.dispatch('updateFolderContent', val).then(() => {
+        // this.loading = false;
+      });
     }
   },
   created() {
     this.$root.$on('files-search', this.handleSearch);
     this.$root.$on('create-folder', this.handleCreateFolder);
     this.$root.$on('folder-move', this.handleFolderMove);
+    this.$root.$on('file-dropped', this.handleFileDropped);
   }
 };
 </script>

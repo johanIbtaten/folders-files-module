@@ -6,18 +6,52 @@
           <slot name="filesheader"></slot>
         </tr>
       </thead>
-      <tbody>
+      <draggable tag="tbody" v-model="dragFiles" v-bind="dragFilesOptions">
         <tr v-for="item in list" :key="item.id">
           <slot name="file" :item="item"></slot>
         </tr>
-      </tbody>
+      </draggable>
     </table>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 export default {
   name: 'FileList',
-  props: ['list']
+  props: ['list'],
+  components: {
+    draggable
+  },
+  data() {
+    return {
+      //listFiles: this.list
+    };
+  },
+  computed: {
+    dragFiles: {
+      get() {
+        //console.log('listFiles', this.listFiles);
+        return this.list;
+      },
+      set(value) {
+        console.log('value', value); ///////////////////////////
+        //this.$root.$emit('folder-move', value);
+      }
+    },
+    dragFilesOptions() {
+      return {
+        animation: 150,
+        group: {
+          name: 'files',
+          put: false
+        },
+        sort: false,
+        forceFallback: true // Key to make autoScroll works
+        //handle: '[data-drag-category]',
+      };
+    }
+  }
 };
 </script>

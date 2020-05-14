@@ -51,13 +51,14 @@ function getStore() {
 
   let mutations = {
     folders(state, payload) {
+      console.log('mutPayload', payload);
       state.folders = payload;
     },
     items(state, payload) {
       state.items = payload;
     },
     add_folder(state, folder) {
-      state.folders.push(folder);
+      state.folders.unshift(folder);
     }
     // languages(state, payload) {
     //   state.languages = payload;
@@ -106,20 +107,9 @@ function getStore() {
           }
         });
       },
-      100,
+      300,
       { leading: true }
     ),
-    // createFolder({ commit }, name) {
-    //   return Backend.createFolder(name).then(response => {
-    //     if (response.success) {
-    //       commit('add_folder', response.message.folder);
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // }
     async updateFolderOrder({ commit }, payload) {
       return Backend.saveFoldersPosition(payload).then(response => {
         if (response.success) {
@@ -132,28 +122,44 @@ function getStore() {
       });
     },
 
-    // async deleteCategory({ commit }, categoryId) {
-    //   return Backend.deleteCategory(categoryId).then(response => {
+    async updateFolderContent({ state, commit }, contentIds) {
+      return Backend.updateFolderContent(contentIds).then(response => {
+        if (response.success) {
+          let payload = state.folders.map(folder => {
+            if (folder.id === contentIds.folderId) {
+              if (!folder.items.includes(contentIds.fileId)) {
+                folder.items.push(contentIds.fileId);
+              }
+            }
+            return folder;
+          });
+
+          console.log('payload', payload); ////////////////////////////////////////
+          commit('folders', payload);
+          window.app.ui.success();
+          return Promise.resolve();
+        } else {
+          window.app.ui.error(response.message);
+        }
+      });
+    }
+
+    // createFolder({ commit }, name) {
+    //   return Backend.createFolder(name).then(response => {
     //     if (response.success) {
-    //       commit('delete_category', categoryId);
+    //       commit('add_folder', response.message.folder);
     //       window.app.ui.success();
     //       return Promise.resolve();
     //     } else {
     //       window.app.ui.error(response.message);
     //     }
     //   });
-    // },
+    // }
 
-    // async updateCategory({ state, commit }, categoryUpdated) {
-    //   return Backend.updateCategory(categoryUpdated).then(response => {
+    // async deleteCategory({ commit }, categoryId) {
+    //   return Backend.deleteCategory(categoryId).then(response => {
     //     if (response.success) {
-    //       let payload = state.categories.map(category => {
-    //         if (category.id === categoryUpdated.id) {
-    //           category.name = categoryUpdated.name;
-    //         }
-    //         return category;
-    //       });
-    //       commit('categories', payload);
+    //       commit('delete_category', categoryId);
     //       window.app.ui.success();
     //       return Promise.resolve();
     //     } else {
