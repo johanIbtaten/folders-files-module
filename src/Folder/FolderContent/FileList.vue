@@ -31,20 +31,13 @@ export default {
   components: {
     draggable
   },
-  data() {
-    return {
-      //listFiles: this.list
-    };
-  },
   computed: {
     dragFiles: {
       get() {
-        //console.log('listFiles', this.listFiles);
         return this.list;
       },
       set(value) {
         console.log('value', value); ///////////////////////////
-        //this.$root.$emit('folder-move', value);
       }
     },
     dragFilesOptions() {
@@ -56,8 +49,12 @@ export default {
           pull: true
         },
         sort: false,
+        revertOnSpill: true,
+        onSpill: function(evt) {
+          evt.item;
+        },
+        chosenClass: 'chosen',
         forceFallback: true // Key to make autoScroll works
-        //handle: '[data-drag-category]',
       };
     }
   },
@@ -73,3 +70,25 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.chosen {
+  //position: relative;
+  opacity: 0;
+}
+
+/* .chosen:after {
+  opacity: 1;
+  visibility: visible;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid blue;
+} */
+
+tbody tr {
+  cursor: move;
+}
+</style>

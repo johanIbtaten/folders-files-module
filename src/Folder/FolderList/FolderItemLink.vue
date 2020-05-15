@@ -10,7 +10,7 @@
     >
       <i class="far fa-folder"></i>
       <span class="pl-3">{{ name ? name : folder.name }}</span
-      >{{ name ? '' : folder.items }}
+      >
       <span class="badge badge-secondary ml-auto">{{
         name ? '' : folder.items.length
       }}</span>
@@ -42,6 +42,7 @@ export default {
   }
 };
 //  :class="{ active: name ? false : this.selectFolderId === this.folder.id }"
+// {{ name ? '' : folder.items }}
 </script>
 
 <style scoped lang="scss">

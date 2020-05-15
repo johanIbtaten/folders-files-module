@@ -37,7 +37,7 @@ function saveFoldersPosition(folders) {
 
 function updateFolderContent({ contentIds, selectedFolder }) {
   return new Promise(resolve => {
-    setTimeout(function() {
+    //setTimeout(function() {
       //ajax goes here
       console.log(
         'ajax call update folder content',
@@ -49,7 +49,7 @@ function updateFolderContent({ contentIds, selectedFolder }) {
         success: true,
         message: null
       });
-    }, 1000);
+    //}, 1000);
   });
 }
 

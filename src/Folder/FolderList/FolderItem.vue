@@ -1,13 +1,16 @@
 <template>
   <div class="c-folder-list">
+    <!-- <div class="overlay"></div> -->
     <draggable
       v-bind="dragDropFileOptions"
       v-model="foldercontent"
       class="dropZoneFile"
+      :class="{
+        active: isActive
+      }"
       @end="endFolder"
       @change="changeFolder"
-      >Dropzone</draggable
-    >
+    ></draggable>
     <div @click.prevent="handleFolderClick">
       <FolderItemLink
         :folder="folder"
@@ -41,9 +44,16 @@ export default {
           name: 'files',
           put: ['files']
         },
-        // dragoverBubble: true,
+        // revertOnSpill: true, // Enable plugin
+        // // Called when item is spilled
+        // onSpill: function(evt) {
+        //   evt.item
+        // },
         forceFallback: true // Key to make autoScroll works
       };
+    },
+    isActive() {
+      return this.selectedFolder.id === this.folder.id;
     }
   },
   methods: {
@@ -76,14 +86,20 @@ export default {
   height: 100%;
   width: 100%;
   position: absolute;
-  background: pink;
-  opacity: 0.4;
-  border: 3px solid red;
-  z-index: -1;
+  //background: pink;
+  opacity: 0;
+  z-index: 1;
   display: none;
+  cursor: crosshair;
 }
 
-.drag-file .dropZoneFile {
+.dropZoneFile:hover {
+  opacity: 0.5;
+  background: rgba(49, 153, 250, 0.1);
+  border: 3px solid rgba(49, 153, 250, 0.5);
+}
+
+.drag-file .dropZoneFile:not(.active) {
   display: block;
 }
 </style>
