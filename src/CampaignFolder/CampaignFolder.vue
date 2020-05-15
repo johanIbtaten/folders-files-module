@@ -2,20 +2,10 @@
   <div :class="{ 'frame-loading': loading }">
     <Folder
       :folders="folders"
-      :allCampaigns="true"
-      :unclassifiedCampaigns="true"
+      :all="'Toutes les campagnes'"
+      :unclassified="'Les campagnes non-classées'"
       :class="{ 'drag-file': isDragFile }"
     >
-      <template v-slot:title>
-        {{
-          selectedFolder
-            ? selectedFolder === 'unclassified'
-              ? 'Les campagnes non-classées'
-              : selectedFolder.name
-            : 'Toutes les campagnes'
-        }}
-      </template>
-
       <template v-slot:link>
         <button class="btn btn-link">
           {{ __('Statistique du dossier') }}
@@ -166,7 +156,6 @@ export default {
             });
             return !isClassified;
           });
-          console.log('files', files);
         } else {
           files = files.filter(file => {
             return this.selectedFolder.items.includes(file.id);
@@ -214,17 +203,19 @@ export default {
     handleGetFolderContent(val) {
       this.selectedFolder = val;
     },
-    handleGetAllClick() {
-      this.selectedFolder = null;
-    },
-    handleGetUnclassifiedClick() {
-      this.selectedFolder = 'unclassified';
-    },
     handleStartDragFile() {
       this.isDragFile = true;
     },
     handleEndDragFile() {
       this.isDragFile = false;
+    },
+    handleFixedFolderClick(val) {
+      if (val === 'all') {
+        this.selectedFolder = null;
+      }
+      if (val === 'unclassified') {
+        this.selectedFolder = 'unclassified';
+      }
     }
   },
   created() {
@@ -233,10 +224,9 @@ export default {
     this.$root.$on('folder-move', this.handleFolderMove);
     this.$root.$on('file-dropped', this.handleFileDropped);
     this.$root.$on('get-folder-content', this.handleGetFolderContent);
-    this.$root.$on('get-all', this.handleGetAllClick);
-    this.$root.$on('get-unclassified', this.handleGetUnclassifiedClick);
     this.$root.$on('start-drag-file', this.handleStartDragFile);
     this.$root.$on('end-drag-file', this.handleEndDragFile);
+    this.$root.$on('fixed-folder-click', this.handleFixedFolderClick);
   }
 };
 </script>

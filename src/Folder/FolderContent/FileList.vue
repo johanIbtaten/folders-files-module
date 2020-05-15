@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table-custom table">
+    <table class="table-custom table" v-if="list.length > 0">
       <thead>
         <tr>
           <slot name="filesheader"></slot>
@@ -18,6 +18,7 @@
         </tr>
       </draggable>
     </table>
+    <div class="pt-2 pb-3" v-else>Pas de campagnes</div>
   </div>
 </template>
 

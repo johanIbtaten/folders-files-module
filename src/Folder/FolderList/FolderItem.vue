@@ -8,29 +8,25 @@
       @change="changeFolder"
       >Dropzone</draggable
     >
-    <a
-      class="d-flex align-items-center border-bottom py-3"
-      @click.prevent="handleFolderClick"
-      href="#"
-    >
-      <i class="fas fa-folder"></i>
-      <span class="pl-3">{{ folder.name }}</span
-      >{{ folder.items }}
-      <span class="badge badge-secondary ml-auto">{{
-        folder.items.length
-      }}</span>
-    </a>
+    <div @click.prevent="handleFolderClick">
+      <FolderItemLink
+        :folder="folder"
+        :selectedFolder="selectedFolder"
+      ></FolderItemLink>
+    </div>
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable';
+import FolderItemLink from './FolderItemLink';
 
 export default {
   name: 'FolderItem',
-  props: ['folder'],
+  props: ['folder', 'selectedFolder'],
   components: {
-    draggable
+    draggable,
+    FolderItemLink
   },
   data() {
     return {
@@ -51,14 +47,7 @@ export default {
     }
   },
   methods: {
-    // fileMoved(file) {
-    //   console.log(arguments);
-    // },
-    // startFile(file) {
-    //   console.log("startFile", file);
-    // },
     handleFolderClick() {
-      console.log('this.folder.id', this.folder);
       this.$root.$emit('get-folder-content', this.folder);
     },
     endFolder(event) {
@@ -81,9 +70,6 @@ export default {
 <style scoped lang="scss">
 .c-folder-list {
   position: relative;
-  a:hover {
-    background: #eee;
-  }
 }
 
 .dropZoneFile {

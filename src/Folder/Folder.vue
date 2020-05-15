@@ -4,12 +4,13 @@
       <div class="col-3">
         <FolderList
           :folders="folders"
-          :allCampaigns="allCampaigns"
-          :unclassifiedCampaigns="unclassifiedCampaigns"
+          :all="all"
+          :unclassified="unclassified"
+          :selectedFolder="selectedFolder"
         ></FolderList>
       </div>
       <div class="col-9">
-        <FolderContent>
+        <FolderContent :selectedFolder="selectedFolder">
           <template slot="title">
             <slot name="title"></slot>
           </template>
@@ -26,41 +27,37 @@
 </template>
 
 <script>
-//import { deburr } from 'lodash';
-
 import FolderList from './FolderList/FolderList';
 import FolderContent from './FolderContent/FolderContent';
 
 export default {
   name: 'Folder',
-  props: ['folders', 'files', 'allCampaigns', 'unclassifiedCampaigns'],
+  props: ['folders', 'files', 'all', 'unclassified'],
+  data() {
+    return {
+      selectedFolder: { id: 'all', name: this.all }
+    };
+  },
   components: {
     FolderList,
     FolderContent
   },
-  data() {
-    return {
-      //searchFiles: ''
-    };
+  methods: {
+    handleGetFolderContent(val) {
+      this.selectedFolder = val;
+    },
+    handleFixedFolderClick(val) {
+      if (val === 'all') {
+        this.selectedFolder = { id: 'all', name: this.all };
+      }
+      if (val === 'unclassified') {
+        this.selectedFolder = { id: 'unclassified', name: this.unclassified };
+      }
+    }
   },
-  computed: {
-    // filteredFiles() {
-    //   return this.files.filter(item => {
-    //     return deburr(item.name.toLowerCase()).match(
-    //       deburr(this.searchItems.toLowerCase())
-    //     );
-    //   });
-    // }
-    // sentCampaigns() {
-    //   return this.filteredItems.filter(item => {
-    //     return item.status === 'sent';
-    //   });
-    // },
-    // draftCampaigns() {
-    //   return this.filteredItems.filter(item => {
-    //     return item.status === 'draft';
-    //   });
-    // }
+  mounted() {
+    this.$root.$on('get-folder-content', this.handleGetFolderContent);
+    this.$root.$on('fixed-folder-click', this.handleFixedFolderClick);
   }
 };
 </script>

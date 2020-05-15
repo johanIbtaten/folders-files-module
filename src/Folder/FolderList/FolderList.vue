@@ -14,29 +14,32 @@
         <i class="fas fa-search"></i>
       </label>
     </div>
-    <a
-      v-if="allCampaigns"
-      class="d-flex align-items-center border-bottom py-2"
-      @click.prevent="handleGetAllClick"
-      href="#"
+
+    <div @click.prevent="handleFixedFolderClick('all')" v-if="all">
+      <FolderItemLink
+        :name="all"
+        :selectedFolder="selectedFolder"
+        :id="'all'"
+      ></FolderItemLink>
+    </div>
+
+    <div
+      @click.prevent="handleFixedFolderClick('unclassified')"
+      v-if="unclassified"
     >
-      <i class="fas fa-folder"></i>
-      <span class="pl-3">Toutes les campagnes</span>
-    </a>
-    <a
-      v-if="unclassifiedCampaigns"
-      class="d-flex align-items-center border-bottom py-2"
-      @click.prevent="handleGetUnclassClick"
-      href="#"
-    >
-      <i class="fas fa-folder"></i>
-      <span class="pl-3">Les campagnes non classées</span>
-    </a>
+      <FolderItemLink
+        :name="unclassified"
+        :selectedFolder="selectedFolder"
+        :id="'unclassified'"
+      ></FolderItemLink>
+    </div>
+
     <draggable v-model="filteredFolder" v-bind="dragFoldersOptions">
       <FolderItem
         v-for="folder in filteredFolder"
         :key="folder.id"
         :folder="folder"
+        :selectedFolder="selectedFolder"
       ></FolderItem>
     </draggable>
     <div class="mt-4">
@@ -49,14 +52,16 @@
 
 <script>
 import FolderItem from './FolderItem';
+import FolderItemLink from './FolderItemLink';
 import draggable from 'vuedraggable';
 import { deburr } from 'lodash';
 
 export default {
   name: 'FolderListing',
-  props: ['folders', 'allCampaigns', 'unclassifiedCampaigns'],
+  props: ['folders', 'all', 'unclassified', 'selectedFolder'],
   components: {
     FolderItem,
+    FolderItemLink,
     draggable
   },
   data() {
@@ -86,7 +91,7 @@ export default {
           put: false
         },
         //handle: '[data-drag-category]',
-        forceFallback: true // Key to make autoScroll works
+        forceFallback: true
       };
     }
   },
@@ -100,11 +105,8 @@ export default {
           }
         });
     },
-    handleGetAllClick() {
-      this.$root.$emit('get-all');
-    },
-    handleGetUnclassClick() {
-      this.$root.$emit('get-unclassified');
+    handleFixedFolderClick(actionName) {
+      this.$root.$emit('fixed-folder-click', actionName);
     }
   }
 };
@@ -118,4 +120,3 @@ export default {
   font-size: 1rem;
 }
 </style>
-

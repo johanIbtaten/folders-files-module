@@ -4,7 +4,9 @@
       <button class="btn btn-outline-secondary float-right">
         <i class="fas fa-cog"></i>
       </button>
-      <h4><slot name="title"></slot></h4>
+      <h4>
+        {{ selectedFolder.name }}
+      </h4>
     </div>
     <div class="text-center mb-3">
       <slot name="link"></slot>
@@ -26,7 +28,7 @@
 <script>
 export default {
   name: 'FolderContent',
-  props: ['inputSearch'],
+  props: ['inputSearch', 'selectedFolder'],
   data() {
     return {
       searchFiles: ''
@@ -42,14 +44,6 @@ export default {
         this.$root.$emit('files-search', val);
       }
     }
-    // inputVal: {
-    //   get() {
-    //     return this.inputSearch;
-    //   },
-    //   set(val) {
-    //     this.$emit('files-search', val);
-    //   }
-    // }
   }
 };
 </script>
