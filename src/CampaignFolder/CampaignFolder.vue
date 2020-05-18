@@ -2,8 +2,16 @@
   <div :class="{ 'frame-loading': loading }">
     <Folder
       :folders="folders"
-      :all="'Toutes les campagnes'"
-      :unclassified="'Les campagnes non-classées'"
+      :all="{
+        name: 'Toutes les campagnes',
+        count: items.length,
+        id: 'all'
+      }"
+      :unclassified="{
+        name: 'Les campagnes non-classées',
+        count: getUnclassified.length,
+        id: 'unclassified'
+      }"
       :class="{ 'drag-file': isDragFile }"
     >
       <template v-slot:link>
@@ -23,6 +31,7 @@
               <template v-if="status === 'sent'">
                 <th>Id</th>
                 <th>Nom</th>
+                <th>Destinataire</th>
                 <th>Status</th>
                 <th>Ouverture</th>
                 <th>Action</th>
@@ -119,7 +128,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import FileList from '../Folder/FolderContent/FileList';
 import Folder from '../Folder/Folder';
@@ -142,20 +151,22 @@ export default {
   },
   computed: {
     ...mapState(['folders', 'items']),
+    ...mapGetters(['getUnclassified']),
     filteredItems() {
       let files = this.items;
 
       if (this.selectedFolder) {
-        if (this.selectedFolder === 'unclassified') {
-          files = files.filter(file => {
-            let isClassified = false;
-            this.folders.map(folder => {
-              if (folder.items.includes(file.id)) {
-                isClassified = true;
-              }
-            });
-            return !isClassified;
-          });
+        if (this.selectedFolder.name === 'unclassified') {
+          // files = files.filter(file => {
+          //   let isClassified = false;
+          //   this.folders.map(folder => {
+          //     if (folder.items.includes(file.id)) {
+          //       isClassified = true;
+          //     }
+          //   });
+          //   return !isClassified;
+          // });
+          files = this.getUnclassified;
         } else {
           files = files.filter(file => {
             return this.selectedFolder.items.includes(file.id);
@@ -210,11 +221,8 @@ export default {
       this.isDragFile = false;
     },
     handleFixedFolderClick(val) {
-      if (val === 'all') {
+      if (val.id === 'all') {
         this.selectedFolder = null;
-      }
-      if (val === 'unclassified') {
-        this.selectedFolder = 'unclassified';
       }
     }
   },

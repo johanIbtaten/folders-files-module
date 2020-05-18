@@ -35,7 +35,7 @@ export default {
   props: ['folders', 'files', 'all', 'unclassified'],
   data() {
     return {
-      selectedFolder: { id: 'all', name: this.all }
+      selectedFolder: this.all
     };
   },
   components: {
@@ -44,15 +44,19 @@ export default {
   },
   methods: {
     handleGetFolderContent(val) {
-      this.selectedFolder = val;
+      if (val.id === 0) {
+        this.selectedFolder = this.unclassified;
+      } else {
+        this.selectedFolder = val;
+      }
     },
     handleFixedFolderClick(val) {
-      if (val === 'all') {
-        this.selectedFolder = { id: 'all', name: this.all };
+      if (val.id === 'all') {
+        this.selectedFolder = this.all;
       }
-      if (val === 'unclassified') {
-        this.selectedFolder = { id: 'unclassified', name: this.unclassified };
-      }
+      // if (val.id === 'unclassified') {
+      //   this.selectedFolder = this.unclassified;
+      // }
     }
   },
   mounted() {

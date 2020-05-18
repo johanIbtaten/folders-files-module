@@ -1,5 +1,5 @@
 <template>
-  <div class="c-folder-list">
+  <div class="c-folder-list" :class="{ 'js-is-draggable': isDraggable }">
     <!-- <div class="overlay"></div> -->
     <draggable
       v-bind="dragDropFileOptions"
@@ -15,6 +15,7 @@
       <FolderItemLink
         :folder="folder"
         :selectedFolder="selectedFolder"
+        :unclassified="unclassified"
       ></FolderItemLink>
     </div>
   </div>
@@ -26,14 +27,15 @@ import FolderItemLink from './FolderItemLink';
 
 export default {
   name: 'FolderItem',
-  props: ['folder', 'selectedFolder'],
+  props: ['folder', 'selectedFolder', 'unclassified'],
   components: {
     draggable,
     FolderItemLink
   },
   data() {
     return {
-      foldercontent: []
+      foldercontent: [],
+      draggable: true
     };
   },
   computed: {
@@ -54,6 +56,9 @@ export default {
     },
     isActive() {
       return this.selectedFolder.id === this.folder.id;
+    },
+    isDraggable() {
+      return this.folder.id !== 0;
     }
   },
   methods: {
@@ -90,7 +95,6 @@ export default {
   opacity: 0;
   z-index: 1;
   display: none;
-  cursor: crosshair;
 }
 
 .dropZoneFile:hover {

@@ -38,17 +38,13 @@ function saveFoldersPosition(folders) {
 function updateFolderContent({ contentIds, selectedFolder }) {
   return new Promise(resolve => {
     //setTimeout(function() {
-      //ajax goes here
-      console.log(
-        'ajax call update folder content',
-        contentIds,
-        selectedFolder
-      );
+    //ajax goes here
+    console.log('ajax call update folder content', contentIds, selectedFolder);
 
-      resolve({
-        success: true,
-        message: null
-      });
+    resolve({
+      success: true,
+      message: null
+    });
     //}, 1000);
   });
 }
@@ -164,6 +160,11 @@ function load() {
       success: true,
       message: {
         folders: [
+          {
+            id: 0,
+            name: "unclassified",
+            items: []
+          },
           {
             id: 1,
             name: "Campagne d'été",

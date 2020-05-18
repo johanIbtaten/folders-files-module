@@ -15,31 +15,24 @@
       </label>
     </div>
 
-    <div @click.prevent="handleFixedFolderClick('all')" v-if="all">
+    <div @click.prevent="handleFixedFolderClick(all)" v-if="all">
       <FolderItemLink
-        :name="all"
+        :all="all"
         :selectedFolder="selectedFolder"
-        :id="'all'"
       ></FolderItemLink>
     </div>
 
-    <div
-      @click.prevent="handleFixedFolderClick('unclassified')"
-      v-if="unclassified"
+    <draggable
+      v-model="filteredFolder"
+      v-bind="dragFoldersOptions"
+      draggable=".js-is-draggable"
     >
-      <FolderItemLink
-        :name="unclassified"
-        :selectedFolder="selectedFolder"
-        :id="'unclassified'"
-      ></FolderItemLink>
-    </div>
-
-    <draggable v-model="filteredFolder" v-bind="dragFoldersOptions">
       <FolderItem
         v-for="folder in filteredFolder"
         :key="folder.id"
         :folder="folder"
         :selectedFolder="selectedFolder"
+        :unclassified="unclassified"
       ></FolderItem>
     </draggable>
     <div class="mt-4">
@@ -105,8 +98,8 @@ export default {
           }
         });
     },
-    handleFixedFolderClick(actionName) {
-      this.$root.$emit('fixed-folder-click', actionName);
+    handleFixedFolderClick(fixedFolder) {
+      this.$root.$emit('fixed-folder-click', fixedFolder);
     }
   }
 };

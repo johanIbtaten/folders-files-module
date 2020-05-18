@@ -49,16 +49,34 @@ function getStore() {
     }
   };
 
+  let getters = {
+    getUnclassified(state) {
+      //return state.itesm.find(event => event.id === id);
+      let res = [];
+      res = state.items.filter(file => {
+        let isClassified = false;
+        state.folders.map(folder => {
+          if (folder.items.includes(file.id)) {
+            isClassified = true;
+          }
+        });
+        return !isClassified;
+      });
+      console.log('res', res);
+      return res;
+    }
+  };
+
   let mutations = {
     folders(state, payload) {
-      console.log('mutPayload', payload);
       state.folders = payload;
     },
     items(state, payload) {
       state.items = payload;
     },
     add_folder(state, folder) {
-      state.folders.unshift(folder);
+      state.folders.splice(1, 0, folder);
+      //state.folders.unshift(folder);
     }
     // languages(state, payload) {
     //   state.languages = payload;
@@ -130,7 +148,7 @@ function getStore() {
         response => {
           if (response.success) {
             let payload = state.folders.map(folder => {
-              if (folder.id === contentIds.folderId) {
+              if (folder.id === contentIds.folderId && folder.id !== 0) {
                 if (!folder.items.includes(contentIds.fileId)) {
                   folder.items.push(contentIds.fileId);
                 }
@@ -146,7 +164,7 @@ function getStore() {
                     1
                   );
                 }
-              }
+              } else
               return folder;
             });
 
@@ -262,6 +280,7 @@ function getStore() {
 
   return new Vuex.Store({
     state,
+    getters,
     mutations,
     actions
   });
