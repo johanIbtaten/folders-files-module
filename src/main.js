@@ -164,7 +164,7 @@ function getStore() {
                     1
                   );
                 }
-              } else
+              }
               return folder;
             });
 
