@@ -53,7 +53,14 @@ import { deburr } from 'lodash';
 
 export default {
   name: 'FolderListing',
-  props: ['folders', 'all', 'unclassified', 'selectedFolder', 'unclassifiedCount', 'allCount'],
+  props: [
+    'folders',
+    'all',
+    'unclassified',
+    'selectedFolder',
+    'unclassifiedCount',
+    'allCount'
+  ],
   components: {
     FolderItem,
     FolderItemLink,
@@ -68,6 +75,9 @@ export default {
     filteredFolder: {
       get() {
         return this.folders.filter(folder => {
+          if (folder.name === 'unclassified') {
+            return true;
+          }
           return deburr(folder.name.toLowerCase()).match(
             deburr(this.search.toLowerCase())
           );
@@ -85,7 +95,6 @@ export default {
           name: 'folders',
           put: false
         },
-        //handle: '[data-drag-folder]',
         forceFallback: true
       };
     }

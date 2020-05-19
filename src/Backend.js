@@ -189,7 +189,7 @@ function load() {
         items: [
           {
             id: 1,
-            name: 'Joyeuse Saint Valentin',
+            name: 'Joyeuse Saint Valentin i fusdiu iosdu fisdufi usiodu fiu sdiofu sidufu sdf usdiof iosdf isdifuisd',
             status: 'draft',
             'status possible values': 'possible values : draft/planned/sent',
             created_at: '2020-05-11 12:00:00',

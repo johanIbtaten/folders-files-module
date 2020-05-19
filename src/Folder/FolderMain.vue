@@ -34,16 +34,7 @@
               <i class="fas fa-search"></i>
             </label>
           </div>
-          <FolderContent
-            :files="files"
-            :search="search"
-            :selectedFolder="selectedFolder"
-            :unclassifiedFiles="unclassifiedFiles"
-          >
-            <template v-slot:content="{ filteredFiles }">
-              <slot name="content" :filteredFiles="filteredFiles"></slot>
-            </template>
-          </FolderContent>
+          <slot name="content" :filteredFiles="filteredFiles"></slot>
         </div>
       </div>
     </div>
@@ -51,8 +42,8 @@
 </template>
 
 <script>
+import { deburr } from 'lodash';
 import FolderList from './FolderList/FolderList';
-import FolderContent from './FolderContent/FolderContent';
 
 export default {
   name: 'Folder',
@@ -65,8 +56,7 @@ export default {
     };
   },
   components: {
-    FolderList,
-    FolderContent
+    FolderList
   },
   computed: {
     unclassifiedFiles() {
@@ -93,6 +83,27 @@ export default {
         return this.unclassified;
       }
       return this.selectedFolder.name;
+    },
+    filteredFiles() {
+      let files = this.files;
+      if (this.selectedFolder && this.selectedFolder !== 'all') {
+        if (this.selectedFolder.name === 'unclassified') {
+          return this.unclassifiedFiles;
+        } else {
+          files = files.filter(file => {
+            return this.selectedFolder.items.includes(file.id);
+          });
+        }
+      }
+
+      if (this.search) {
+        return files.filter(file => {
+          return deburr(file.name.toLowerCase()).match(
+            deburr(this.search.toLowerCase())
+          );
+        });
+      }
+      return files;
     }
   },
   methods: {

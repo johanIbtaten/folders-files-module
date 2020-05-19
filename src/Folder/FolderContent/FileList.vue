@@ -61,6 +61,7 @@ export default {
         },
         handle: '[data-drag-file]',
         chosenClass: 'chosen',
+        dragClass: 'drag',
         forceFallback: true // Key to make autoScroll works
       };
     }
@@ -82,11 +83,50 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.chosen {
-  width: 825px;
-  // opacity: 0;
+<style lang="scss">
+/*.chosen {
+  background: green !important;
+  /* width:300px;
+  background: pink !important;
+  //td:nth-child(2) {
+  td {
+    background: red !important;
+    display: none !important;
+  }
+  opacity: 0;
+} */
+
+.ghost {
 }
+
+.drag {
+  background: burlywood !important;
+  border: none !important;
+  width: 350px !important;
+  //display: inline-block;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  td {
+    display: none;
+  }
+
+  td:nth-child(1),
+  td:nth-child(3) {
+    display: block;
+    border: none !important;
+  }
+}
+
+/* .sortable-gost td {
+  background: pink  !important;
+  display: none;
+} */
+
+/* tr td:nth-child(2) {
+  background: pink  !important;
+  display: block !important;
+} */
 
 /* .chosen:after {
   opacity: 1;

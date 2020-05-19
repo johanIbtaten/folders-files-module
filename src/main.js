@@ -150,55 +150,36 @@ function getStore() {
         selectedFolder
       }).then(response => {
         if (response.success) {
-          let isAlreadyInFolder = false;
-          let existInFolderId = null;
-          state.folders.map(folder => {
-            if (folder.items.includes(fileId)) {
-              isAlreadyInFolder = true;
-              existInFolderId = folder.id;
-            }
-          });
-          console.log('isAlreadyInFolder', isAlreadyInFolder);
-          console.log('existInFolderId', existInFolderId);
-
-          console.log('toFolder', toFolder);
-          console.log('fileId', fileId);
-          console.log('selectedFolder', selectedFolder);
+          
+          // console.log('toFolder', toFolder);
+          // console.log('fileId', fileId);
+          // console.log('selectedFolder', selectedFolder);
 
           let payload = state.folders.map(folder => {
             if (
               folder.id === toFolder.id &&
               toFolder !== selectedFolder.id &&
-              toFolder.name !== 'unclassified' &&
-              !isAlreadyInFolder
+              toFolder.name !== 'unclassified'
             ) {
               if (!folder.items.includes(fileId)) {
                 folder.items.push(fileId);
               }
-            }
-
-            if (
-              folder.id === selectedFolder.id &&
-              toFolder !== selectedFolder.id &&
-              folder.name !== 'unclassified'
-            ) {
+            } else {
               if (folder.items.includes(fileId)) {
                 folder.items.splice(folder.items.indexOf(fileId), 1);
               }
             }
 
             if (toFolder.name === 'unclassified') {
-              console.log('unclassified');
               if (folder.items.includes(fileId)) {
                 folder.items.splice(folder.items.indexOf(fileId), 1);
               }
             }
-
             return folder;
           });
 
           commit('folders', payload);
-          window.app.ui.success('dddd');
+          window.app.ui.success();
           return Promise.resolve();
         } else {
           window.app.ui.error(response.message);
