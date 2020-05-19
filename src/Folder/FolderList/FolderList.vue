@@ -15,10 +15,11 @@
       </label>
     </div>
 
-    <div @click.prevent="handleFixedFolderClick(all)" v-if="all">
+    <div @click.prevent="handleFixedFolderClick('all')">
       <FolderItemLink
         :all="all"
         :selectedFolder="selectedFolder"
+        :allCount="allCount"
       ></FolderItemLink>
     </div>
 
@@ -33,6 +34,7 @@
         :folder="folder"
         :selectedFolder="selectedFolder"
         :unclassified="unclassified"
+        :unclassifiedCount="unclassifiedCount"
       ></FolderItem>
     </draggable>
     <div class="mt-4">
@@ -51,7 +53,7 @@ import { deburr } from 'lodash';
 
 export default {
   name: 'FolderListing',
-  props: ['folders', 'all', 'unclassified', 'selectedFolder'],
+  props: ['folders', 'all', 'unclassified', 'selectedFolder', 'unclassifiedCount', 'allCount'],
   components: {
     FolderItem,
     FolderItemLink,
@@ -83,7 +85,7 @@ export default {
           name: 'folders',
           put: false
         },
-        //handle: '[data-drag-category]',
+        //handle: '[data-drag-folder]',
         forceFallback: true
       };
     }
@@ -98,8 +100,8 @@ export default {
           }
         });
     },
-    handleFixedFolderClick(fixedFolder) {
-      this.$root.$emit('fixed-folder-click', fixedFolder);
+    handleFixedFolderClick(folderName) {
+      this.$root.$emit('fixed-folder-click', folderName);
     }
   }
 };

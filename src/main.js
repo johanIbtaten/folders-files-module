@@ -142,40 +142,68 @@ function getStore() {
 
     async updateFolderContent(
       { state, commit },
-      { contentIds, selectedFolder }
+      { toFolder, fileId, selectedFolder }
     ) {
-      return Backend.updateFolderContent({ contentIds, selectedFolder }).then(
-        response => {
-          if (response.success) {
-            let payload = state.folders.map(folder => {
-              if (folder.id === contentIds.folderId && folder.id !== 0) {
-                if (!folder.items.includes(contentIds.fileId)) {
-                  folder.items.push(contentIds.fileId);
-                }
-              }
-              if (
-                selectedFolder &&
-                folder.id === selectedFolder.id &&
-                contentIds.folderId !== selectedFolder.id
-              ) {
-                if (folder.items.includes(contentIds.fileId)) {
-                  folder.items.splice(
-                    folder.items.indexOf(contentIds.fileId),
-                    1
-                  );
-                }
-              }
-              return folder;
-            });
+      return Backend.updateFolderContent({
+        toFolder,
+        fileId,
+        selectedFolder
+      }).then(response => {
+        if (response.success) {
+          let isAlreadyInFolder = false;
+          let existInFolderId = null;
+          state.folders.map(folder => {
+            if (folder.items.includes(fileId)) {
+              isAlreadyInFolder = true;
+              existInFolderId = folder.id;
+            }
+          });
+          console.log('isAlreadyInFolder', isAlreadyInFolder);
+          console.log('existInFolderId', existInFolderId);
 
-            commit('folders', payload);
-            window.app.ui.success();
-            return Promise.resolve();
-          } else {
-            window.app.ui.error(response.message);
-          }
+          console.log('toFolder', toFolder);
+          console.log('fileId', fileId);
+          console.log('selectedFolder', selectedFolder);
+
+          let payload = state.folders.map(folder => {
+            if (
+              folder.id === toFolder.id &&
+              toFolder !== selectedFolder.id &&
+              toFolder.name !== 'unclassified' &&
+              !isAlreadyInFolder
+            ) {
+              if (!folder.items.includes(fileId)) {
+                folder.items.push(fileId);
+              }
+            }
+
+            if (
+              folder.id === selectedFolder.id &&
+              toFolder !== selectedFolder.id &&
+              folder.name !== 'unclassified'
+            ) {
+              if (folder.items.includes(fileId)) {
+                folder.items.splice(folder.items.indexOf(fileId), 1);
+              }
+            }
+
+            if (toFolder.name === 'unclassified') {
+              console.log('unclassified');
+              if (folder.items.includes(fileId)) {
+                folder.items.splice(folder.items.indexOf(fileId), 1);
+              }
+            }
+
+            return folder;
+          });
+
+          commit('folders', payload);
+          window.app.ui.success('dddd');
+          return Promise.resolve();
+        } else {
+          window.app.ui.error(response.message);
         }
-      );
+      });
     }
 
     // createFolder({ commit }, name) {

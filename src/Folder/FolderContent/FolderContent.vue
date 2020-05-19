@@ -1,48 +1,36 @@
 <template>
   <div>
-    <div class="text-center">
-      <button class="btn btn-outline-secondary float-right">
-        <i class="fas fa-cog"></i>
-      </button>
-      <h4>
-        {{ selectedFolder.name }}
-      </h4>
-    </div>
-    <div class="text-center mb-3">
-      <slot name="link"></slot>
-    </div>
-    <div class="mb-4">
-      <label class="form-control form-control-search">
-        <input
-          type="text"
-          placeholder="Rechercher dans les campagnes"
-          v-model="search"
-        />
-        <i class="fas fa-search"></i>
-      </label>
-    </div>
-    <slot name="content"></slot>
+    <slot name="content" :filteredFiles="filteredFiles"></slot>
   </div>
 </template>
 
 <script>
+import { deburr } from 'lodash';
+
 export default {
   name: 'FolderContent',
-  props: ['inputSearch', 'selectedFolder'],
-  data() {
-    return {
-      searchFiles: ''
-    };
-  },
+  props: ['search', 'files', 'unclassifiedFiles', 'selectedFolder'],
   computed: {
-    search: {
-      get() {
-        return this.searchFiles;
-      },
-      set(val) {
-        this.searchFiles = val;
-        this.$root.$emit('files-search', val);
+    filteredFiles() {
+      let files = this.files;
+      if (this.selectedFolder && this.selectedFolder !== 'all') {
+        if (this.selectedFolder.name === 'unclassified') {
+          return this.unclassifiedFiles;
+        } else {
+          files = files.filter(file => {
+            return this.selectedFolder.items.includes(file.id);
+          });
+        }
       }
+
+      if (this.search) {
+        return files.filter(file => {
+          return deburr(file.name.toLowerCase()).match(
+            deburr(this.search.toLowerCase())
+          );
+        });
+      }
+      return files;
     }
   }
 };

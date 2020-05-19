@@ -35,11 +35,16 @@ function saveFoldersPosition(folders) {
   });
 }
 
-function updateFolderContent({ contentIds, selectedFolder }) {
+function updateFolderContent({ toFolderId, fileId, selectedFolder }) {
   return new Promise(resolve => {
     //setTimeout(function() {
     //ajax goes here
-    console.log('ajax call update folder content', contentIds, selectedFolder);
+    console.log(
+      'ajax call update folder content',
+      toFolderId,
+      fileId,
+      selectedFolder
+    );
 
     resolve({
       success: true,
@@ -162,7 +167,7 @@ function load() {
         folders: [
           {
             id: 0,
-            name: "unclassified",
+            name: 'unclassified',
             items: []
           },
           {

@@ -1,31 +1,24 @@
 <template>
   <div :class="{ 'frame-loading': loading }">
-    <Folder
+    <FolderMain
       :folders="folders"
-      :all="{
-        name: 'Toutes les campagnes',
-        count: items.length,
-        id: 'all'
-      }"
-      :unclassified="{
-        name: 'Les campagnes non-classées',
-        count: getUnclassified.length,
-        id: 'unclassified'
-      }"
-      :class="{ 'drag-file': isDragFile }"
+      :files="items"
+      :all="__('Toutes les campagnes')"
+      :unclassified="__('Les campagnes non-classées')"
+      :searchFilesPlaceholder="__('Rechercher dans les campagnes')"
     >
       <template v-slot:link>
-        <button class="btn btn-link">
+        <a class="btn btn-link" href="#">
           {{ __('Statistique du dossier') }}
           <i class="fas fa-chart-bar"></i>
-        </button>
+        </a>
       </template>
 
-      <template v-slot:content>
+      <template v-slot:content="{ filteredFiles }">
         <div v-for="(status, index) in statusList" :key="index">
           <h3>{{ status }}</h3>
 
-          <FileList :list="campaignWithStatus(status)">
+          <FileList :list="campaignWithStatus(filteredFiles, status)">
             <template v-slot:filesheader>
               <!-- SENT -->
               <template v-if="status === 'sent'">
@@ -56,13 +49,14 @@
               </template>
             </template>
 
-            <template v-slot:file="{ item }">
+            <template v-slot:file="{ file }">
               <!-- SENT -->
               <template v-if="status === 'sent'">
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.opened_count }}</td>
+                <td>{{ file.id }}</td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.status }}</td>
+                <td>{{ file.opened_count }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -80,9 +74,9 @@
 
               <!-- PLANNED -->
               <template v-if="status === 'planned'">
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.status }}</td>
+                <td>{{ file.id }}</td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.status }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -100,11 +94,11 @@
 
               <!-- DRAFT -->
               <template v-if="status === 'draft'">
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.opened_count }}</td>
-                <td>{{ item.id }}</td>
+                <td>{{ file.id }}</td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.status }}</td>
+                <td>{{ file.opened_count }}</td>
+                <td>{{ file.id }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -123,76 +117,36 @@
           </FileList>
         </div>
       </template>
-    </Folder>
+    </FolderMain>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 
 import FileList from '../Folder/FolderContent/FileList';
-import Folder from '../Folder/Folder';
-import { deburr } from 'lodash';
+import FolderMain from '../Folder/FolderMain';
 
 export default {
   name: 'CampaignFolder',
   components: {
     FileList,
-    Folder
+    FolderMain
   },
   data() {
     return {
       loading: false,
-      searchItems: '',
-      statusList: ['sent', 'planned', 'draft'],
-      selectedFolder: null,
-      isDragFile: false
+      statusList: ['sent', 'planned', 'draft']
     };
   },
   computed: {
-    ...mapState(['folders', 'items']),
-    ...mapGetters(['getUnclassified']),
-    filteredItems() {
-      let files = this.items;
-
-      if (this.selectedFolder) {
-        if (this.selectedFolder.name === 'unclassified') {
-          // files = files.filter(file => {
-          //   let isClassified = false;
-          //   this.folders.map(folder => {
-          //     if (folder.items.includes(file.id)) {
-          //       isClassified = true;
-          //     }
-          //   });
-          //   return !isClassified;
-          // });
-          files = this.getUnclassified;
-        } else {
-          files = files.filter(file => {
-            return this.selectedFolder.items.includes(file.id);
-          });
-        }
-      }
-
-      if (this.searchItems) {
-        return files.filter(item => {
-          return deburr(item.name.toLowerCase()).match(
-            deburr(this.searchItems.toLowerCase())
-          );
-        });
-      }
-
-      return files;
-    }
+    ...mapState(['folders', 'items'])
   },
   methods: {
-    campaignWithStatus(status) {
-      return this.filteredItems.filter(item => {
-        return item.status === status;
+    campaignWithStatus(filteredFiles, status) {
+      return filteredFiles.filter(file => {
+        return file.status === status;
       });
-    },
-    handleSearch(val) {
-      this.searchItems = val;
     },
     handleCreateFolder(val) {
       this.loading = true;
@@ -204,37 +158,13 @@ export default {
       this.$store.dispatch('updateFolderOrder', val).then(() => {});
     },
     handleFileDropped(val) {
-      this.$store
-        .dispatch('updateFolderContent', {
-          contentIds: val,
-          selectedFolder: this.selectedFolder
-        })
-        .then(() => {});
-    },
-    handleGetFolderContent(val) {
-      this.selectedFolder = val;
-    },
-    handleStartDragFile() {
-      this.isDragFile = true;
-    },
-    handleEndDragFile() {
-      this.isDragFile = false;
-    },
-    handleFixedFolderClick(val) {
-      if (val.id === 'all') {
-        this.selectedFolder = null;
-      }
+      this.$store.dispatch('updateFolderContent', val).then(() => {});
     }
   },
   created() {
-    this.$root.$on('files-search', this.handleSearch);
     this.$root.$on('create-folder', this.handleCreateFolder);
     this.$root.$on('folder-move', this.handleFolderMove);
     this.$root.$on('file-dropped', this.handleFileDropped);
-    this.$root.$on('get-folder-content', this.handleGetFolderContent);
-    this.$root.$on('start-drag-file', this.handleStartDragFile);
-    this.$root.$on('end-drag-file', this.handleEndDragFile);
-    this.$root.$on('fixed-folder-click', this.handleFixedFolderClick);
   }
 };
 </script>

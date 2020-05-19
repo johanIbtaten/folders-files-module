@@ -22,12 +22,19 @@
 <script>
 export default {
   name: 'FolderItemLink',
-  props: ['folder', 'selectedFolder', 'all', 'unclassified'],
+  props: [
+    'folder',
+    'selectedFolder',
+    'all',
+    'unclassified',
+    'allCount',
+    'unclassifiedCount'
+  ],
   computed: {
     isActive() {
       if (this.selectedFolder) {
-        if (this.all) {
-          return this.selectedFolder.id === this.all.id;
+        if (this.selectedFolder === 'all' && this.allCount) {
+          return true;
         }
         if (this.folder) {
           return this.selectedFolder.id === this.folder.id;
@@ -37,23 +44,23 @@ export default {
     },
     folderName() {
       if (this.all) {
-        return this.all.name;
+        return this.all;
       }
       if (this.folder) {
-        if (this.unclassified && this.folder.name === 'unclassified') {
-          return this.unclassified.name;
+        if (this.folder.name === 'unclassified') {
+          return this.unclassified;
         }
         return this.folder.name;
       }
       return null;
     },
     folderCount() {
-      if (this.all) {
-        return this.all.count;
+      if (this.allCount) {
+        return this.allCount;
       }
       if (this.folder) {
         if (this.unclassified && this.folder.name === 'unclassified') {
-          return this.unclassified.count;
+          return this.unclassifiedCount;
         }
         return this.folder.items.length;
       }

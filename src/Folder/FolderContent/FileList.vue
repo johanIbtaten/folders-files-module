@@ -3,6 +3,7 @@
     <table class="table-custom table" v-if="list.length > 0">
       <thead>
         <tr>
+          <th></th>
           <slot name="filesheader"></slot>
         </tr>
       </thead>
@@ -13,8 +14,13 @@
         @start="onStart"
         @end="onEnd"
       >
-        <tr v-for="item in list" :key="item.id">
-          <slot name="file" :item="item"></slot>
+        <tr v-for="file in list" :key="file.id" ref="file">
+          <td>
+            <button class="btn btn-link mr-1 drag-file" data-drag-file>
+              <i class="fas fa-bars"></i>
+            </button>
+          </td>
+          <slot name="file" :file="file"></slot>
         </tr>
       </draggable>
     </table>
@@ -53,14 +59,19 @@ export default {
         onSpill: function(evt) {
           evt.item;
         },
+        handle: '[data-drag-file]',
         chosenClass: 'chosen',
         forceFallback: true // Key to make autoScroll works
       };
     }
   },
   methods: {
-    onStart() {
+    onStart(event) {
       console.log('start');
+      console.log(event);
+      console.log(event.item.clientWidth);
+      //console.log(this.$refs.file.clientWidth);
+      //console.log(this.$refs.file);
       this.$root.$emit('start-drag-file');
     },
     onEnd() {
@@ -73,8 +84,8 @@ export default {
 
 <style scoped lang="scss">
 .chosen {
-  //position: relative;
-  opacity: 0;
+  width: 825px;
+  // opacity: 0;
 }
 
 /* .chosen:after {
@@ -88,7 +99,7 @@ export default {
   border: 3px solid blue;
 } */
 
-tbody tr {
+.drag-file {
   cursor: move;
 }
 </style>

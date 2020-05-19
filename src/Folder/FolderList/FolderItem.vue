@@ -16,6 +16,7 @@
         :folder="folder"
         :selectedFolder="selectedFolder"
         :unclassified="unclassified"
+        :unclassifiedCount="unclassifiedCount"
       ></FolderItemLink>
     </div>
   </div>
@@ -27,7 +28,7 @@ import FolderItemLink from './FolderItemLink';
 
 export default {
   name: 'FolderItem',
-  props: ['folder', 'selectedFolder', 'unclassified'],
+  props: ['folder', 'selectedFolder', 'unclassified', 'unclassifiedCount'],
   components: {
     draggable,
     FolderItemLink
@@ -72,8 +73,9 @@ export default {
       console.log('changeFolder', event);
       if (event.added) {
         let payload = {
-          folderId: this.folder.id,
-          fileId: event.added.element.id
+          toFolder: this.folder,
+          fileId: event.added.element.id,
+          selectedFolder: this.selectedFolder
         };
         this.$root.$emit('file-dropped', payload);
       }
@@ -91,8 +93,8 @@ export default {
   height: 100%;
   width: 100%;
   position: absolute;
-  //background: pink;
-  opacity: 0;
+  background: pink;
+  opacity: 0.5;
   z-index: 1;
   display: none;
 }
