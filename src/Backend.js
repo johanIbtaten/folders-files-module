@@ -35,38 +35,53 @@ function saveFoldersPosition(folders) {
   });
 }
 
-function updateFolderContent({ toFolderId, fileId, selectedFolder }) {
+function updateFolderContent({ toFolderId, fileId }) {
   return new Promise(resolve => {
-    //setTimeout(function() {
+    setTimeout(function() {
     //ajax goes here
-    console.log(
-      'ajax call update folder content',
-      toFolderId,
-      fileId,
-      selectedFolder
-    );
+    console.log('ajax call update folder content', {
+      id: toFolderId,
+      fileId: fileId
+    });
 
     resolve({
       success: true,
       message: null
     });
-    //}, 1000);
+    }, 500);
   });
 }
 
-// function deleteCategory(categoryId) {
-//   return new Promise(resolve => {
-//     setTimeout(function() {
-//       //ajax goes here
-//       console.log('ajax call delete category', categoryId);
+function renameFolder(folderUpdated) {
+  return new Promise(resolve => {
+    setTimeout(function() {
+      //ajax goes here
+      console.log('ajax call rename folder', {
+        id: folderUpdated.id,
+        name: folderUpdated.name
+      });
 
-//       resolve({
-//         success: true,
-//         message: null
-//       });
-//     }, 1000);
-//   });
-// }
+      resolve({
+        success: true,
+        message: null
+      });
+    }, 500);
+  });
+}
+
+function deleteFolder(folderId) {
+  return new Promise(resolve => {
+    setTimeout(function() {
+      //ajax goes here
+      console.log('ajax call delete folder', folderId);
+
+      resolve({
+        success: true,
+        message: null
+      });
+    }, 1000);
+  });
+}
 
 // // Snippets //
 
@@ -189,7 +204,8 @@ function load() {
         items: [
           {
             id: 1,
-            name: 'Joyeuse Saint Valentin i fusdiu iosdu fisdufi usiodu fiu sdiofu sidufu sdf usdiof iosdf isdifuisd',
+            name:
+              'Joyeuse Saint Valentin i fusdiu iosdu fisdufi usiodu fiu sdiofu sidufu sdf usdiof iosdf isdifuisd',
             status: 'draft',
             'status possible values': 'possible values : draft/planned/sent',
             created_at: '2020-05-11 12:00:00',
@@ -288,7 +304,9 @@ export default {
   load,
   createFolder,
   saveFoldersPosition,
-  updateFolderContent
+  updateFolderContent,
+  renameFolder,
+  deleteFolder
   // deleteCategory,
   // saveSnippetsPosition,
   // saveSnippet,

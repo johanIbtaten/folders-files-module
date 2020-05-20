@@ -1,21 +1,19 @@
 <template>
-  <div>
-    <!--{{ unclassified }}
-     {{ folder ? folder.id : '' }} -->
-    <!-- {{ folderName }}<br />
-    {{ folderCount }} -->
-    <a
-      class="btn-link btn d-flex align-items-center border-bottom py-3 text-left"
-      :class="{
-        active: isActive
-      }"
-      @click.prevent
-      href="#"
-    >
-      <i class="far fa-folder"></i>
-      <span class="pl-3">{{ folderName }}</span>
-      <span class="badge badge-secondary ml-auto">{{ folderCount }}</span>
-    </a>
+  <div
+    class="c-folder-item-link btn d-flex align-items-center border-bottom py-3 text-left pl-0"
+    :class="{
+      active: isActive
+    }"
+  >
+    <i v-if="!isActive" class="far fa-folder fa-fw btn btn-link"></i>
+    <i v-else class="far fa-folder-open fa-fw btn btn-link"></i>
+    <span class="pl-3  pr-3">{{ folderName }}</span>
+    <span class="badge badge-secondary ml-auto">{{ folderCount }}</span>
+    <i
+      v-if="folder && folder.name !== 'unclassified'"
+      class="fas fa-arrows-alt-v btn btn-link ml-2"
+      data-drag-folder
+    ></i>
   </div>
 </template>
 
@@ -71,13 +69,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-a.active {
+.c-folder-item-link.active {
   background: rgb(178, 207, 245);
   .fa-folder:before {
     content: '\f07c';
   }
 }
-a:hover:not(.active) {
+.fas {
+  font-size: 0.7rem !important;
+}
+.c-folder-item-link:hover:not(.active) {
   background: #eee;
 }
 </style>

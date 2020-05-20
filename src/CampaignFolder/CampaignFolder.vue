@@ -148,21 +148,39 @@ export default {
         return file.status === status;
       });
     },
-    handleCreateFolder(val) {
+    handleCreateFolder(payload) {
       this.loading = true;
-      this.$store.dispatch('createFolder', val).then(() => {
+      this.$store.dispatch('createFolder', payload).then(() => {
         this.loading = false;
       });
     },
-    handleFolderMove(val) {
-      this.$store.dispatch('updateFolderOrder', val).then(() => {});
+    handleRenameFolder(payload) {
+      this.loading = true;
+      this.$store.dispatch('renameFolder', payload).then(() => {
+        this.loading = false;
+      });
     },
-    handleFileDropped(val) {
-      this.$store.dispatch('updateFolderContent', val).then(() => {});
+    handleDeleteFolder(payload) {
+      this.loading = true;
+      this.$store.dispatch('deleteFolder', payload).then(() => {
+        this.loading = false;
+      });
+    },
+    handleFolderMove(payload) {
+      this.$store.dispatch('updateFolderOrder', payload).then(() => {});
+    },
+    handleFileDropped(payload) {
+      this.loading = true;
+      this.$store.dispatch('updateFolderContent', payload).then(() => {
+        this.loading = false;
+      });
+      // this.$store.dispatch('updateFolderContent', payload).then(() => {});
     }
   },
   created() {
     this.$root.$on('create-folder', this.handleCreateFolder);
+    this.$root.$on('rename-folder', this.handleRenameFolder);
+    this.$root.$on('delete-folder', this.handleDeleteFolder);
     this.$root.$on('folder-move', this.handleFolderMove);
     this.$root.$on('file-dropped', this.handleFileDropped);
   }

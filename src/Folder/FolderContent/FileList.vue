@@ -60,19 +60,18 @@ export default {
           evt.item;
         },
         handle: '[data-drag-file]',
-        chosenClass: 'chosen',
-        dragClass: 'drag',
+        chosenClass: 'chosen', // Class name for the chosen item
+        dragClass: 'drag', // Class name for the dragging item
+        ghostClass: 'ghost', // Class name for the drop placeholder
         forceFallback: true // Key to make autoScroll works
       };
     }
   },
   methods: {
-    onStart(event) {
+    onStart() {
       console.log('start');
-      console.log(event);
-      console.log(event.item.clientWidth);
-      //console.log(this.$refs.file.clientWidth);
-      //console.log(this.$refs.file);
+      // console.log(event);
+      // console.log(event.item.clientWidth);
       this.$root.$emit('start-drag-file');
     },
     onEnd() {
@@ -84,49 +83,34 @@ export default {
 </script>
 
 <style lang="scss">
-/*.chosen {
-  background: green !important;
-  /* width:300px;
-  background: pink !important;
-  //td:nth-child(2) {
-  td {
-    background: red !important;
-    display: none !important;
-  }
-  opacity: 0;
-} */
-
-.ghost {
+/* .chosen {
+  background: red;
 }
 
+.ghost {
+  background: greenyellow;
+} */
+
 .drag {
-  background: burlywood !important;
-  border: none !important;
-  width: 350px !important;
-  //display: inline-block;
+  opacity: 1 !important;
+  background: white !important;
+  border: 6px solid gray !important;
+  width: 300px !important;
+  height: 80px !important;
   display: flex;
   align-items: center;
-  padding: 15px;
+  cursor: move;
   td {
     display: none;
   }
-
   td:nth-child(1),
   td:nth-child(3) {
-    display: block;
+    display: inline;
     border: none !important;
+    background: transparent !important;
+    //padding: 15px;
   }
 }
-
-/* .sortable-gost td {
-  background: pink  !important;
-  display: none;
-} */
-
-/* tr td:nth-child(2) {
-  background: pink  !important;
-  display: block !important;
-} */
 
 /* .chosen:after {
   opacity: 1;

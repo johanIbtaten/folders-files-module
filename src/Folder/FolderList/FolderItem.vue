@@ -1,8 +1,11 @@
 <template>
-  <div class="c-folder-list" :class="{ 'js-is-draggable': isDraggable }">
-    <!-- <div class="overlay"></div> -->
+  <div
+    class="c-folder-list"
+    :class="{ 'js-is-draggable': isDraggable }"
+    @click="handleFolderClick"
+  >  
     <draggable
-      v-bind="dragDropFileOptions"
+      v-bind="dropFileZoneOptions"
       v-model="foldercontent"
       class="dropZoneFile"
       :class="{
@@ -11,7 +14,7 @@
       @end="endFolder"
       @change="changeFolder"
     ></draggable>
-    <div @click.prevent="handleFolderClick">
+    <div>
       <FolderItemLink
         :folder="folder"
         :selectedFolder="selectedFolder"
@@ -40,18 +43,13 @@ export default {
     };
   },
   computed: {
-    dragDropFileOptions() {
+    dropFileZoneOptions() {
       return {
         animation: 150,
         group: {
           name: 'files',
           put: ['files']
         },
-        // revertOnSpill: true, // Enable plugin
-        // // Called when item is spilled
-        // onSpill: function(evt) {
-        //   evt.item
-        // },
         forceFallback: true // Key to make autoScroll works
       };
     },
@@ -64,6 +62,7 @@ export default {
   },
   methods: {
     handleFolderClick() {
+      console.log('handleFolderClick');
       this.$root.$emit('get-folder-content', this.folder);
     },
     endFolder(event) {
@@ -94,7 +93,7 @@ export default {
   width: 100%;
   position: absolute;
   background: pink;
-  opacity: 0.5;
+  opacity: 0.2;
   z-index: 1;
   display: none;
 }

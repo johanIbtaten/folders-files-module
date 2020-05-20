@@ -77,20 +77,20 @@ function getStore() {
     add_folder(state, folder) {
       state.folders.splice(1, 0, folder);
       //state.folders.unshift(folder);
+    },
+    delete_folder(state, folderId) {
+      state.folders.splice(
+        state.folders.findIndex(folder => {
+          return folder.id === folderId;
+        }),
+        1
+      );
     }
     // languages(state, payload) {
     //   state.languages = payload;
     // },
     // add_snippet(state, snippet) {
     //   state.snippets.push(snippet);
-    // },
-    // delete_category(state, categoryId) {
-    //   state.categories.splice(
-    //     state.categories.findIndex(category => {
-    //       return category.id === categoryId;
-    //     }),
-    //     1
-    //   );
     // },
     // delete_snippet(state, snippetId) {
     //   state.snippets.splice(
@@ -125,7 +125,7 @@ function getStore() {
           }
         });
       },
-      300,
+      1000,
       { leading: true }
     ),
     async updateFolderOrder({ commit }, payload) {
@@ -145,16 +145,10 @@ function getStore() {
       { toFolder, fileId, selectedFolder }
     ) {
       return Backend.updateFolderContent({
-        toFolder,
-        fileId,
-        selectedFolder
+        toFolderId: toFolder.id,
+        fileId
       }).then(response => {
         if (response.success) {
-          
-          // console.log('toFolder', toFolder);
-          // console.log('fileId', fileId);
-          // console.log('selectedFolder', selectedFolder);
-
           let payload = state.folders.map(folder => {
             if (
               folder.id === toFolder.id &&
@@ -185,7 +179,37 @@ function getStore() {
           window.app.ui.error(response.message);
         }
       });
-    }
+    },
+
+    async renameFolder({ state, commit }, folderUpdated) {
+      return Backend.renameFolder(folderUpdated).then(response => {
+        if (response.success) {
+          let payload = state.folders.map(folder => {
+            if (folder.id === folderUpdated.id) {
+              folder.name = folderUpdated.name;
+            }
+            return folder;
+          });
+          commit('folders', payload);
+          window.app.ui.success();
+          return Promise.resolve();
+        } else {
+          window.app.ui.error(response.message);
+        }
+      });
+    },
+
+    async deleteFolder({ commit }, folderId) {
+      return Backend.deleteFolder(folderId).then(response => {
+        if (response.success) {
+          commit('delete_folder', folderId);
+          window.app.ui.success();
+          return Promise.resolve();
+        } else {
+          window.app.ui.error(response.message);
+        }
+      });
+    },
 
     // createFolder({ commit }, name) {
     //   return Backend.createFolder(name).then(response => {
@@ -199,17 +223,6 @@ function getStore() {
     //   });
     // }
 
-    // async deleteCategory({ commit }, categoryId) {
-    //   return Backend.deleteCategory(categoryId).then(response => {
-    //     if (response.success) {
-    //       commit('delete_category', categoryId);
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // },
 
     // /* On debounce cette action pour éviter un double appel quand
     // on déplace un snippet d'une catégorie à une autre */

@@ -95,6 +95,7 @@ export default {
           name: 'folders',
           put: false
         },
+        handle: '[data-drag-folder]',
         forceFallback: true
       };
     }
