@@ -10,7 +10,7 @@
     </div>
     <div>
       <label class="form-control form-control-search">
-        <input type="text" placeholder="Recherche" v-model="search" />
+        <input type="text" :placeholder="__('Rechercher')" v-model="search" />
         <i class="fas fa-search"></i>
       </label>
     </div>
@@ -84,7 +84,6 @@ export default {
         });
       },
       set(value) {
-        console.log(value);
         this.$root.$emit('folder-move', value);
       }
     },

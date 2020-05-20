@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-3" :class="{ 'drag-file': isDragFile }">
     <div class="row">
-      <div class="col-3">
+      <div class="col-md-3">
         <FolderList
           :folders="folders"
           :all="all"
@@ -11,7 +11,7 @@
           :selectedFolder="selectedFolder"
         ></FolderList>
       </div>
-      <div class="col-9">
+      <div class="col-md-9">
         <div>
           <div class="text-center">
             <div
@@ -141,7 +141,6 @@ export default {
         .prompt(this.__('Renommer le dossier'), this.selectedFolder.name)
         .then(response => {
           if (response) {
-            //let payload = { id: this.selectedFolder.id, name: response };
             this.$root.$emit('rename-folder', {
               id: this.selectedFolder.id,
               name: response

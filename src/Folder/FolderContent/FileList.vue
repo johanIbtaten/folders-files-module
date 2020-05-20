@@ -24,7 +24,7 @@
         </tr>
       </draggable>
     </table>
-    <div class="pt-2 pb-3" v-else>Pas de campagnes</div>
+    <div class="pt-2 pb-3" v-else>{{ __('Pas de campagnes') }}</div>
   </div>
 </template>
 
@@ -42,9 +42,7 @@ export default {
       get() {
         return this.list;
       },
-      set(value) {
-        console.log('value', value); ///////////////////////////
-      }
+      set() {}
     },
     dragFilesOptions() {
       return {
@@ -55,6 +53,8 @@ export default {
           pull: true
         },
         sort: false,
+        /* Permet le retour de l'item à sa position initiale si l'on
+        relâche le drag en dehors de la liste de destination */
         revertOnSpill: true,
         onSpill: function(evt) {
           evt.item;
@@ -69,13 +69,9 @@ export default {
   },
   methods: {
     onStart() {
-      console.log('start');
-      // console.log(event);
-      // console.log(event.item.clientWidth);
       this.$root.$emit('start-drag-file');
     },
     onEnd() {
-      console.log('end');
       this.$root.$emit('end-drag-file');
     }
   }
@@ -83,13 +79,13 @@ export default {
 </script>
 
 <style lang="scss">
-/* .chosen {
-  background: red;
+.chosen {
+  // background: red;
 }
 
 .ghost {
-  background: greenyellow;
-} */
+  // background: greenyellow;
+}
 
 .drag {
   opacity: 1 !important;
@@ -104,24 +100,24 @@ export default {
     display: none;
   }
   td:nth-child(1),
-  td:nth-child(3) {
+  td:nth-child(2) {
     display: inline;
     border: none !important;
     background: transparent !important;
-    //padding: 15px;
   }
 }
 
-/* .chosen:after {
-  opacity: 1;
-  visibility: visible;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 3px solid blue;
-} */
+.drag:after {
+  // content:"sdsdf";
+  // opacity: 1;
+  // visibility: visible;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  // height: 100%;
+  // border: 3px solid blue;
+}
 
 .drag-file {
   cursor: move;

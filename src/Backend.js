@@ -207,7 +207,6 @@ function load() {
             name:
               'Joyeuse Saint Valentin i fusdiu iosdu fisdufi usiodu fiu sdiofu sidufu sdf usdiof iosdf isdifuisd',
             status: 'draft',
-            'status possible values': 'possible values : draft/planned/sent',
             created_at: '2020-05-11 12:00:00',
             date_scheduled: '2020-05-11 12:00:00',
             date_sent: '2020-05-11 12:00:00',

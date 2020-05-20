@@ -4,9 +4,6 @@ import Vuex from 'vuex';
 import Backend from './Backend';
 import CampaignFolder from './CampaignFolder/CampaignFolder';
 
-// import Loader from './Loader';
-// Vue.component('Loader', Loader);
-
 import { debounce } from 'lodash';
 
 import './crm_stuff';
@@ -22,6 +19,19 @@ Vue.mixin({
 });
 
 Vue.config.productionTip = false;
+
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    let dateFormated = new Date(value);
+    const options = {
+      //weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    return dateFormated.toLocaleDateString('fr-FR', options);
+  }
+});
 
 let store = getStore();
 
@@ -51,7 +61,6 @@ function getStore() {
 
   let getters = {
     getUnclassified(state) {
-      //return state.itesm.find(event => event.id === id);
       let res = [];
       res = state.items.filter(file => {
         let isClassified = false;
@@ -62,7 +71,6 @@ function getStore() {
         });
         return !isClassified;
       });
-      console.log('res', res);
       return res;
     }
   };
@@ -76,7 +84,6 @@ function getStore() {
     },
     add_folder(state, folder) {
       state.folders.splice(1, 0, folder);
-      //state.folders.unshift(folder);
     },
     delete_folder(state, folderId) {
       state.folders.splice(
@@ -173,6 +180,7 @@ function getStore() {
           });
 
           commit('folders', payload);
+          commit('items', [...state.items]);
           window.app.ui.success();
           return Promise.resolve();
         } else {
@@ -209,7 +217,7 @@ function getStore() {
           window.app.ui.error(response.message);
         }
       });
-    },
+    }
 
     // createFolder({ commit }, name) {
     //   return Backend.createFolder(name).then(response => {
@@ -222,7 +230,6 @@ function getStore() {
     //     }
     //   });
     // }
-
 
     // /* On debounce cette action pour éviter un double appel quand
     // on déplace un snippet d'une catégorie à une autre */

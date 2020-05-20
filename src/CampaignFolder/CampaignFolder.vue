@@ -15,48 +15,76 @@
       </template>
 
       <template v-slot:content="{ filteredFiles }">
-        <div v-for="(status, index) in statusList" :key="index">
-          <h3>{{ status }}</h3>
+        <div v-for="(statusItem, index) in statusList" :key="index">
+          <h3>{{ statusItem.title }}</h3>
 
-          <FileList :list="campaignWithStatus(filteredFiles, status)">
+          <FileList
+            :list="campaignWithStatus(filteredFiles, statusItem.status)"
+          >
             <template v-slot:filesheader>
-              <!-- SENT -->
-              <template v-if="status === 'sent'">
+              <!-- DRAFT -->
+              <template v-if="statusItem.status === 'draft'">
+                <th>Nom</th>
+                <th>Status</th>
+                <th>Ouverture</th>
+                <th>Action</th>
                 <th>Id</th>
+                <th>Id</th>
+              </template>
+
+              <!-- SENT -->
+              <template v-if="statusItem.status === 'sent'">
                 <th>Nom</th>
                 <th>Destinataire</th>
                 <th>Status</th>
                 <th>Ouverture</th>
                 <th>Action</th>
+                <th>Id</th>
               </template>
 
               <!-- PLANNED -->
-              <template v-if="status === 'planned'">
-                <th>Id</th>
+              <template v-if="statusItem.status === 'planned'">
                 <th>Nom</th>
                 <th>Status</th>
                 <th>Action</th>
-              </template>
-
-              <!-- DRAFT -->
-              <template v-if="status === 'draft'">
                 <th>Id</th>
-                <th>Nom</th>
-                <th>Status</th>
-                <th>Ouverture</th>
-                <th>Id</th>
-                <th>Action</th>
               </template>
             </template>
 
             <template v-slot:file="{ file }">
-              <!-- SENT -->
-              <template v-if="status === 'sent'">
-                <td>{{ file.id }}</td>
-                <td>{{ file.name }}</td>
-                <td>{{ file.name }}</td>
+              <!-- DRAFT -->
+              <template v-if="statusItem.status === 'draft'">
+                <td>
+                  <strong>{{ file.name }}</strong>
+                </td>
                 <td>{{ file.status }}</td>
                 <td>{{ file.opened_count }}</td>
+                <td>{{ file.id }}</td>
+                <td>{{ file.id }}</td>
+                <td>
+                  <div class="ml-auto btn-container">
+                    <div class="btn-group">
+                      <button class="btn btn-secondary mr-1">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <button class="btn btn-secondary">
+                        {{ __('modifier') }}
+                        <i class="fas fa-arrow-right ml-1"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </template>
+
+              <!-- SENT -->
+              <template v-if="statusItem.status === 'sent'">
+                <td>
+                  <strong>{{ file.name }}</strong>
+                </td>
+                <td>{{ file.sending_list[0].total_customer }}</td>
+                <td>{{ file.status }}</td>
+                <td>{{ file.opened_count | formatDate }}</td>
+                <td>{{ file.id }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -73,10 +101,12 @@
               </template>
 
               <!-- PLANNED -->
-              <template v-if="status === 'planned'">
-                <td>{{ file.id }}</td>
-                <td>{{ file.name }}</td>
+              <template v-if="statusItem.status === 'planned'">
+                <td>
+                  <strong>{{ file.name }}</strong>
+                </td>
                 <td>{{ file.status }}</td>
+                <td>{{ file.id }}</td>
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -91,30 +121,9 @@
                   </div>
                 </td>
               </template>
-
-              <!-- DRAFT -->
-              <template v-if="status === 'draft'">
-                <td>{{ file.id }}</td>
-                <td>{{ file.name }}</td>
-                <td>{{ file.status }}</td>
-                <td>{{ file.opened_count }}</td>
-                <td>{{ file.id }}</td>
-                <td>
-                  <div class="ml-auto btn-container">
-                    <div class="btn-group">
-                      <button class="btn btn-secondary mr-1">
-                        <i class="fas fa-ellipsis-h"></i>
-                      </button>
-                      <button class="btn btn-secondary">
-                        {{ __('modifier') }}
-                        <i class="fas fa-arrow-right ml-1"></i>
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </template>
             </template>
           </FileList>
+          <!-- </template> -->
         </div>
       </template>
     </FolderMain>
@@ -136,7 +145,11 @@ export default {
   data() {
     return {
       loading: false,
-      statusList: ['sent', 'planned', 'draft']
+      statusList: [
+        { status: 'draft', title: this.__('En préparation') },
+        { status: 'sent', title: this.__('Envoyé') },
+        { status: 'planned', title: this.__('Planifié') }
+      ]
     };
   },
   computed: {
@@ -174,7 +187,6 @@ export default {
       this.$store.dispatch('updateFolderContent', payload).then(() => {
         this.loading = false;
       });
-      // this.$store.dispatch('updateFolderContent', payload).then(() => {});
     }
   },
   created() {

@@ -3,7 +3,7 @@
     class="c-folder-list"
     :class="{ 'js-is-draggable': isDraggable }"
     @click="handleFolderClick"
-  >  
+  >
     <draggable
       v-bind="dropFileZoneOptions"
       v-model="foldercontent"
@@ -11,7 +11,6 @@
       :class="{
         active: isActive
       }"
-      @end="endFolder"
       @change="changeFolder"
     ></draggable>
     <div>
@@ -50,26 +49,21 @@ export default {
           name: 'files',
           put: ['files']
         },
-        forceFallback: true // Key to make autoScroll works
+        forceFallback: true
       };
     },
     isActive() {
       return this.selectedFolder.id === this.folder.id;
     },
     isDraggable() {
-      return this.folder.id !== 0;
+      return this.folder.name !== 'unclassified';
     }
   },
   methods: {
     handleFolderClick() {
-      console.log('handleFolderClick');
       this.$root.$emit('get-folder-content', this.folder);
     },
-    endFolder(event) {
-      console.log('endFolder', event);
-    },
     changeFolder(event) {
-      console.log('changeFolder', event);
       if (event.added) {
         let payload = {
           toFolder: this.folder,
