@@ -162,6 +162,7 @@ export default {
     },
     handleGetFolderContent(payload) {
       this.selectedFolder = payload;
+      this.isCogOpen = false;
     },
     handleFixedFolderClick(payload) {
       if (payload === 'all') {
