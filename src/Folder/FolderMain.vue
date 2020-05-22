@@ -56,7 +56,11 @@
               <i class="fas fa-search"></i>
             </label>
           </div>
-          <slot name="content" :filteredFiles="filteredFiles"></slot>
+          <slot
+            name="content"
+            :filteredFiles="filteredSearchFiles"
+            :selectedFolder="selectedFolder"
+          ></slot>
         </div>
       </div>
     </div>
@@ -109,6 +113,24 @@ export default {
     },
     filteredFiles() {
       let files = this.files;
+
+      if (this.selectedFolder && this.selectedFolder === 'all') {
+        files.map(file => {
+          let isClassified = false;
+          this.folders.map(folder => {
+            if (folder.items.includes(file.id)) {
+              isClassified = true;
+              file['classifiedIn'] = folder.name;
+            }
+            console.log('isClassified', isClassified);
+          });
+          if (!isClassified) {
+            file['classifiedIn'] = '';
+          }
+          return file;
+        });
+      }
+
       if (this.selectedFolder && this.selectedFolder !== 'all') {
         if (this.selectedFolder.name === 'unclassified') {
           return this.unclassifiedFiles;
@@ -118,9 +140,13 @@ export default {
           });
         }
       }
+      return files;
+    },
+    filteredSearchFiles() {
+      let files = this.filteredFiles;
 
       if (this.search) {
-        return files.filter(file => {
+        files = this.filteredFiles.filter(file => {
           return deburr(file.name.toLowerCase()).match(
             deburr(this.search.toLowerCase())
           );

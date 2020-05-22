@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <th></th>
+          <th v-show="selectedFolder === 'all'">{{ __('Classée dans') }}</th>
           <slot name="filesheader"></slot>
         </tr>
       </thead>
@@ -20,6 +21,9 @@
               <i class="fas fa-bars"></i>
             </button>
           </td>
+          <td v-show="selectedFolder === 'all'">
+            {{ file.classifiedIn ? file.classifiedIn : 'Non-classée' }}
+          </td>
           <slot name="file" :file="file"></slot>
         </tr>
       </draggable>
@@ -33,7 +37,7 @@ import draggable from 'vuedraggable';
 
 export default {
   name: 'FileList',
-  props: ['list'],
+  props: ['list', 'selectedFolder'],
   components: {
     draggable
   },
@@ -91,7 +95,7 @@ export default {
   opacity: 1 !important;
   background: white !important;
   border: 6px solid gray !important;
-  width: 300px !important;
+  width: 400px !important;
   height: 80px !important;
   display: flex;
   align-items: center;
@@ -100,7 +104,8 @@ export default {
     display: none;
   }
   td:nth-child(1),
-  td:nth-child(2) {
+  td:nth-child(2),
+  td:nth-child(3) {
     display: inline;
     border: none !important;
     background: transparent !important;

@@ -14,12 +14,13 @@
         </a>
       </template>
 
-      <template v-slot:content="{ filteredFiles }">
+      <template v-slot:content="{ filteredFiles, selectedFolder }">
         <div v-for="(statusItem, index) in statusList" :key="index">
           <h3>{{ statusItem.title }}</h3>
 
           <FileList
             :list="campaignWithStatus(filteredFiles, statusItem.status)"
+            :selectedFolder="selectedFolder"
           >
             <template v-slot:filesheader>
               <!-- DRAFT -->
@@ -58,7 +59,7 @@
                   <strong>{{ file.name }}</strong>
                 </td>
                 <td>{{ file.status }}</td>
-                <td>{{ file.opened_count }}</td>
+                <td>{{ file.opened_count | formatDate }}</td>
                 <td>{{ file.id }}</td>
                 <td>{{ file.id }}</td>
                 <td>
