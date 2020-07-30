@@ -1,10 +1,13 @@
 // import $ from 'jquery';
 
+/* Permet de simuler l'internationalisation */
 window.__ = function(txt) {
   return txt;
 };
 
 // window.app.ui.loadingFrame(this.$parent.$el, false)
+
+/* Permet d'ajouter des fonctions helpers à l'objet window*/
 window.app = {
   ui: {
     // loading: function(onOff) {
@@ -29,6 +32,7 @@ window.app = {
     error(msg) {
       alert('Error !' + String(msg));
     },
+    /* Permet d'afficher un message de notification de success */
     success() {
       //alert('Success')
       let str = `<div class="toaster alert alert-success" role="alert" style="position: fixed; top: 0; left: 50%; margin-left: -50px;">

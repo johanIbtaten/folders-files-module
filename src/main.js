@@ -10,6 +10,8 @@ import './crm_stuff';
 
 Vue.use(Vuex);
 
+/* On ajoute une mixin pour ajouter la fonction de simulation
+d'internationalisation sur tous les composants */
 Vue.mixin({
   methods: {
     __(string) {
@@ -20,6 +22,7 @@ Vue.mixin({
 
 Vue.config.productionTip = false;
 
+// On déclare un filtre qui permet de formater la date en français
 Vue.filter('formatDate', function(value) {
   if (value) {
     let dateFormated = new Date(value);
@@ -33,32 +36,35 @@ Vue.filter('formatDate', function(value) {
   }
 });
 
+// On initialise un store
 let store = getStore();
 
 // Instance de vue //
+// On crée une instance de vue avec le smart component CampaignFolder
 new Vue({
   store,
   render: h => h(CampaignFolder)
 }).$mount('#app');
 
+// On appel l'action load pour initialiser le store
 store.dispatch('load');
 
 // Store //
+// On déclare le store
 function getStore() {
+  // On déclare le state
   let state = {
+    // Tableau des folders
     folders: [],
+    // Tableau des campagnes
     items: [],
     loading: {
       createFolder: false,
-      // delSnippet: false,
-      // addCategory: false,
-      // delCategory: false,
-      // updateCategory: false,
-      // createSnippet: false,
       el: null
     }
   };
 
+  // On déclare les getters
   let getters = {
     getUnclassified(state) {
       let res = [];
@@ -75,6 +81,7 @@ function getStore() {
     }
   };
 
+  // On déclare les mutations
   let mutations = {
     folders(state, payload) {
       state.folders = payload;
@@ -93,26 +100,9 @@ function getStore() {
         1
       );
     }
-    // languages(state, payload) {
-    //   state.languages = payload;
-    // },
-    // add_snippet(state, snippet) {
-    //   state.snippets.push(snippet);
-    // },
-    // delete_snippet(state, snippetId) {
-    //   state.snippets.splice(
-    //     state.snippets.findIndex(snippet => {
-    //       return snippet.id === snippetId;
-    //     }),
-    //     1
-    //   );
-    // },
-    // loading(state, { event, isLoading, el }) {
-    //   state.loading[event] = isLoading;
-    //   state.loading['el'] = el ? el : null;
-    // }
   };
 
+  // On déclare les actions
   let actions = {
     async load({ commit }) {
       return Backend.load().then(response => {
@@ -218,95 +208,9 @@ function getStore() {
         }
       });
     }
-
-    // createFolder({ commit }, name) {
-    //   return Backend.createFolder(name).then(response => {
-    //     if (response.success) {
-    //       commit('add_folder', response.message.folder);
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // }
-
-    // /* On debounce cette action pour éviter un double appel quand
-    // on déplace un snippet d'une catégorie à une autre */
-    // debounceUpdateSnippetsOrder: debounce(
-    //   ({ state, commit }, snippetsUpdated) => {
-    //     let payload = state.snippets.map(snippet => {
-    //       let snippetUpdated = snippetsUpdated.find(
-    //         snipUp => snipUp.id === snippet.id
-    //       );
-    //       if (snippetUpdated) {
-    //         snippet = snippetUpdated;
-    //       }
-    //       return snippet;
-    //     });
-    //     Backend.saveSnippetsPosition(payload).then(response => {
-    //       if (response.success) {
-    //         commit('snippets', payload);
-    //         window.app.ui.success();
-    //       } else {
-    //         window.app.ui.error(response.message);
-    //       }
-    //     });
-    //   },
-    //   100
-    // ),
-
-    // async saveSnippet({ state, commit }, { snippetToSave, create }) {
-    //   return Backend.saveSnippet(snippetToSave).then(response => {
-    //     if (response.success) {
-    //       if (create) {
-    //         commit('add_snippet', snippetToSave);
-    //       } else {
-    //         let payload = state.snippets.map(snippet => {
-    //           if (snippet.id === snippetToSave.id) {
-    //             snippet.title = snippetToSave.title;
-    //             snippet.contents = snippetToSave.contents;
-    //           }
-    //           return snippet;
-    //         });
-    //         commit('snippets', payload);
-    //       }
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // },
-
-    // async getEmptySnippet() {
-    //   return Backend.getEmptySnippet().then(response => {
-    //     if (response.success) {
-    //       window.app.ui.success();
-    //       return Promise.resolve(response);
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // },
-
-    // async deleteSnippet({ commit }, snippetId) {
-    //   return Backend.deleteSnippet(snippetId).then(response => {
-    //     if (response.success) {
-    //       commit('delete_snippet', snippetId);
-    //       window.app.ui.success();
-    //       return Promise.resolve();
-    //     } else {
-    //       window.app.ui.error(response.message);
-    //     }
-    //   });
-    // },
-
-    // loading({ commit }, payload) {
-    //   commit('loading', payload);
-    // }
   };
 
+  // On instancie notre store
   return new Vuex.Store({
     state,
     getters,

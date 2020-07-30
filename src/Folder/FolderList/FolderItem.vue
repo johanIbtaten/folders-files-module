@@ -86,7 +86,7 @@ export default {
   height: 100%;
   width: 100%;
   position: absolute;
-  background: pink;
+  // background: pink;
   opacity: 0.2;
   z-index: 1;
   display: none;

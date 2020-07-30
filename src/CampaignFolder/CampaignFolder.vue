@@ -1,5 +1,9 @@
 <template>
+  <!-- On ajoute la classe frame-loading si la variables est à loading à true -->
   <div :class="{ 'frame-loading': loading }">
+    <!-- On charge notre dumb component qui prend en props des folders, des files à classer
+    et les props pour personnaliser l'affichage
+    -->
     <FolderMain
       :folders="folders"
       :files="items"
@@ -7,6 +11,7 @@
       :unclassified="__('Les campagnes non-classées')"
       :searchFilesPlaceholder="__('Rechercher dans les campagnes')"
     >
+      <!-- On créer un slot link pour personnaliser le lien -->
       <template v-slot:link>
         <a class="btn btn-link" href="#">
           {{ __('Statistique du dossier') }}
@@ -14,15 +19,22 @@
         </a>
       </template>
 
+      <!-- On crée un scoped slot content qui récupère en prop de slot les files filtrés et le dossier sélectionné -->
       <template v-slot:content="{ filteredFiles, selectedFolder }">
+        <!-- On boucle sur la liste des status des files -->
         <div v-for="(statusItem, index) in statusList" :key="index">
+          <!-- On affiche le titre du status -->
           <h3>{{ statusItem.title }}</h3>
-
+          <!-- On affiche un composant qui liste des files, on lui passe en props
+          les fichiers filtrés avec le bon status et le dossier selectionné
+          -->
           <FileList
             :list="campaignWithStatus(filteredFiles, statusItem.status)"
             :selectedFolder="selectedFolder"
           >
+            <!-- On crée un slot filesheader qui correspond au header du tableau des files -->
             <template v-slot:filesheader>
+              <!-- Si c'est le status draft on insère ce header personnalisé dans le slot -->
               <!-- DRAFT -->
               <template v-if="statusItem.status === 'draft'">
                 <th>Nom</th>
@@ -52,16 +64,20 @@
               </template>
             </template>
 
+            <!-- On crée un scoped slot file qui récupère un file en prop de slot -->
             <template v-slot:file="{ file }">
+              <!-- Si c'est le status draft on affiche cette structure personnalisée de tableau -->
               <!-- DRAFT -->
               <template v-if="statusItem.status === 'draft'">
                 <td>
+                  <!-- On récupère et on affiche la proprété name du file -->
                   <strong>{{ file.name }}</strong>
                 </td>
                 <td>{{ file.status }}</td>
                 <td>{{ file.opened_count | formatDate }}</td>
                 <td>{{ file.id }}</td>
                 <td>{{ file.id }}</td>
+                <!-- On affiche des boutons personnalisés -->
                 <td>
                   <div class="ml-auto btn-container">
                     <div class="btn-group">
@@ -146,6 +162,7 @@ export default {
   data() {
     return {
       loading: false,
+      // On déclare une liste de status pour les files
       statusList: [
         { status: 'draft', title: this.__('En préparation') },
         { status: 'sent', title: this.__('Envoyé') },
@@ -154,9 +171,12 @@ export default {
     };
   },
   computed: {
+    // On importe les tableaux des folders et des items depuis le store
     ...mapState(['folders', 'items'])
   },
   methods: {
+    // Méthode qui retourne les fichiers filtrés qui ont pour status
+    // le status passé en paramètre
     campaignWithStatus(filteredFiles, status) {
       return filteredFiles.filter(file => {
         return file.status === status;

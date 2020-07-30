@@ -38,16 +38,16 @@ function saveFoldersPosition(folders) {
 function updateFolderContent({ toFolderId, fileId }) {
   return new Promise(resolve => {
     setTimeout(function() {
-    //ajax goes here
-    console.log('ajax call update folder content', {
-      id: toFolderId,
-      fileId: fileId
-    });
+      //ajax goes here
+      console.log('ajax call update folder content', {
+        id: toFolderId,
+        fileId: fileId
+      });
 
-    resolve({
-      success: true,
-      message: null
-    });
+      resolve({
+        success: true,
+        message: null
+      });
     }, 500);
   });
 }
