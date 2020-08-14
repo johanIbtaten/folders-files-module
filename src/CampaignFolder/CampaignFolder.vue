@@ -183,8 +183,11 @@ export default {
       });
     },
     handleCreateFolder(payload) {
+      // On démarre le loading
       this.loading = true;
+      // On dispatch l'action createFolder en passant le payload de l'event
       this.$store.dispatch('createFolder', payload).then(() => {
+        // Quand la promesse est résolue on arrête le loading
         this.loading = false;
       });
     },
@@ -211,6 +214,7 @@ export default {
     }
   },
   created() {
+    // Quand un event create-folder est emit on appelle la method handleCreateFolder
     this.$root.$on('create-folder', this.handleCreateFolder);
     this.$root.$on('rename-folder', this.handleRenameFolder);
     this.$root.$on('delete-folder', this.handleDeleteFolder);

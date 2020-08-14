@@ -219,6 +219,7 @@ export default {
         });
     },
     handleGetFolderContent(payload) {
+      // On récupère le contenu de l'event emit
       this.selectedFolder = payload;
       this.isCogOpen = false;
     },
@@ -235,6 +236,7 @@ export default {
     }
   },
   created() {
+    // On récupère l'event get-folder-content et on appelle la method handleGetFolderContent
     this.$root.$on('get-folder-content', this.handleGetFolderContent);
     this.$root.$on('fixed-folder-click', this.handleFixedFolderClick);
     this.$root.$on('start-drag-file', this.handleStartDragFile);

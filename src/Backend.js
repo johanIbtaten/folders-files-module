@@ -8,10 +8,13 @@ function uuid() {
 
 function createFolder(name) {
   return new Promise(resolve => {
+    // On simule un temps de traitement de 500ms
     setTimeout(function() {
       //ajax goes here
       console.log('ajax call add folder', { name });
 
+      // On retourne une promesse résolue avec un objet qui contient
+      // le folder vide avec un id unique
       resolve({
         success: true,
         message: { folder: { id: uuid(), name, items: [] } }

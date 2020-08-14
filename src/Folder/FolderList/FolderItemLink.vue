@@ -5,10 +5,13 @@
       active: isActive
     }"
   >
+    <!-- On affiche l(icone du folder ouvert quand isActive est à true) -->
     <i v-if="!isActive" class="far fa-folder fa-fw btn btn-link"></i>
     <i v-else class="far fa-folder-open fa-fw btn btn-link"></i>
-    <span class="pl-3  pr-3">{{ folderName }}</span>
+    <span class="pl-3 pr-3">{{ folderName }}</span>
     <span class="badge badge-secondary ml-auto">{{ folderCount }}</span>
+    <!-- On affiche l'icone de drag sur tous les folders à part le folder unclassified 
+    L'attribut data-drag-folder détermine que l'action de drag se fera sur cette élément-->
     <i
       v-if="folder && folder.name !== 'unclassified'"
       class="fas fa-arrows-alt-v btn btn-link ml-2"
