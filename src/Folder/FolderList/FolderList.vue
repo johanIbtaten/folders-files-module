@@ -22,7 +22,7 @@
     se modifier en déplaçant les items.
     On bind les options de draggable dragFoldersOptions
     On affiche la liste si il y au moins un folder en plus du folder unclassified    
-    La partie draggable du composant aura la class .js-is-draggable
+    Les items qui seront draggable auront la class .js-is-draggable
     -->
     <draggable
       v-model="filteredFolder"
@@ -127,15 +127,18 @@ export default {
     }
   },
   methods: {
+    // Ouvre un prompt pour créer un folder
     createFolder() {
       window.app.ui
         .prompt(this.__('Ajouter un nouveau dossier'))
         .then(response => {
           if (response) {
+            // La réponse est émise pour la mettre en bdd et mettre à jour le store
             this.$root.$emit('create-folder', response);
           }
         });
     },
+    // Gère le click sur le folder all et unclassified
     handleFixedFolderClick(folderName) {
       this.$root.$emit('fixed-folder-click', folderName);
     }
@@ -144,6 +147,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// Permet de styliser les enfants du composant
 /deep/ a:hover {
   text-decoration: none;
 }
